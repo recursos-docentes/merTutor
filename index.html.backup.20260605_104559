@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>DB-Lab — UTU 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        .level-card { transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; }
+        .level-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up   { animation: fadeUp 0.5s ease forwards; opacity: 0; }
+        .delay-1   { animation-delay: 0.1s; }
+        .delay-2   { animation-delay: 0.25s; }
+        .delay-3   { animation-delay: 0.4s; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col">
+
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <header class="border-b border-slate-800 py-5 px-6">
+        <div class="max-w-5xl mx-auto flex items-center justify-between gap-6">
+            <div class="flex items-center gap-6">
+                <a href="index.html" class="hover:opacity-80 transition">
+                    <img src="logo plataforma BD.png" alt="DB-Lab UTU" class="h-16">
+                </a>
+                <div class="flex flex-col">
+                    <p class="text-xs font-extrabold text-sky-400 uppercase tracking-widest">Entrenador de Diseño de Bases de Datos</p>
+                    <p class="text-sm text-slate-400">UTU</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('help-modal').classList.remove('hidden')" title="¿Cómo usar?"
+                class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:border-sky-400 transition text-sm font-bold">?</button>
+        </div>
+    </header>
+
+    <!-- ── Hero ───────────────────────────────────────────── -->
+    <main class="flex-1 flex flex-col items-center justify-center px-6 py-12">
+
+        <div class="text-center mb-12 max-w-3xl fade-up delay-1">
+            <h2 class="text-2xl font-extrabold leading-tight">
+                Practicá conceptos de bases de datos, desde E-R hasta SQL
+            </h2>
+        </div>
+
+        <!-- ── Ejercicios por concepto ──────────────────────── -->
+        <div class="w-full max-w-4xl space-y-8">
+
+            <!-- 1. ENTIDADES, ATRIBUTOS Y RELACIONES -->
+            <section class="fade-up delay-2" data-concept="relaciones_simples">
+                <h2 class="text-2xl font-extrabold text-sky-400 mb-4">Entidades, atributos y relaciones</h2>
+                <p class="text-slate-400 text-sm mb-3">Fundamentos: identificar entidades, atributos y modelar relaciones simples.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Los ejercicios se generan dinámicamente -->
+                </div>
+            </section>
+
+            <!-- 2. ATRIBUTOS ESPECIALES -->
+            <section class="fade-up delay-2" data-concept="atributos_especiales">
+                <h2 class="text-2xl font-extrabold text-teal-400 mb-4">Atributos especiales</h2>
+                <p class="text-slate-400 text-sm mb-3">Compuesto, multivaluado, derivado y de relación.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Los ejercicios se generan dinámicamente -->
+                </div>
+            </section>
+
+            <!-- 3. TOTALIDAD / PARTICIPACIÓN -->
+            <section class="fade-up delay-3" data-concept="participacion">
+                <h2 class="text-2xl font-extrabold text-violet-400 mb-4">Totalidad (participación)</h2>
+                <p class="text-slate-400 text-sm mb-3">Participación total y parcial en relaciones.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Los ejercicios se generan dinámicamente -->
+                </div>
+            </section>
+
+            <!-- 5. ENTIDADES DÉBILES -->
+            <section class="fade-up delay-3">
+                <h2 class="text-2xl font-extrabold text-slate-400 mb-4">Entidades débiles</h2>
+                <p class="text-slate-400 text-sm mb-3">Entidades que dependen de otras para su identificación.</p>
+                <div class="px-4 py-3 bg-slate-700/40 border border-slate-600/50 rounded-xl text-sm font-semibold text-slate-400 flex items-center gap-2.5">
+                    <span>🔒</span> Ejercicio pendiente
+                </div>
+            </section>
+
+            <!-- 5. AUTORELACIÓN -->
+            <section class="fade-up delay-3" data-concept="autorelacion">
+                <h2 class="text-2xl font-extrabold text-cyan-400 mb-4">Autorelación</h2>
+                <p class="text-slate-400 text-sm mb-3">Relación de una entidad consigo misma.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Los ejercicios se generan dinámicamente -->
+                </div>
+            </section>
+
+            <!-- 6. GENERALIZACIÓN / ISA -->
+            <section class="fade-up delay-3" data-concept="generalizacion">
+                <h2 class="text-2xl font-extrabold text-purple-400 mb-4">Generalización/Categorización (ISA)</h2>
+                <p class="text-slate-400 text-sm mb-3">Especialización y entidades heredadas.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Los ejercicios se generan dinámicamente -->
+                </div>
+            </section>
+
+            <!-- 7. AGREGACIÓN -->
+            <section class="fade-up delay-3">
+                <h2 class="text-2xl font-extrabold text-pink-400 mb-4">Agregación</h2>
+                <p class="text-slate-400 text-sm mb-3">Tratar una relación como una entidad.</p>
+                <div class="px-4 py-3 bg-slate-700/40 border border-slate-600/50 rounded-xl text-sm font-semibold text-slate-400 flex items-center gap-2.5">
+                    <span>🔒</span> Ejercicio pendiente
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- ── Modal de ayuda ──────────────────────────────── -->
+    <div id="help-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-white font-extrabold text-xl">¿Cómo usar DB-Lab?</h2>
+                <button onclick="document.getElementById('help-modal').classList.add('hidden')" class="text-slate-400 hover:text-white text-2xl leading-none">✕</button>
+            </div>
+            <div class="space-y-4 text-slate-300 text-sm leading-relaxed">
+                <div>
+                    <p class="font-semibold text-white mb-1">1. Elige un ejercicio</p>
+                    <p>Selecciona el concepto E-R que quieras practicar de la lista de abajo.</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-white mb-1">2. Analiza el problema</p>
+                    <p>Lee el enunciado y clasifica los términos (Entidad, Atributo, Relación).</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-white mb-1">3. Dibuja el diagrama E-R</p>
+                    <p>Completa los espacios en blanco del diagrama con los términos correctos.</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-white mb-1">4. Guarda tu trabajo</p>
+                    <p>Exporta el diagrama como imagen para guardar o imprimir.</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('help-modal').classList.add('hidden')" class="w-full mt-6 py-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg transition">Entendido</button>
+        </div>
+    </div>
+
+    <!-- ── Footer ─────────────────────────────────────────── -->
+    <footer class="border-t border-slate-800 py-4 text-center text-xs text-slate-300">
+        Herramienta diseñada por Prof. Elizabeth Izquierdo con asistencia de Claude —
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank"
+           class="underline hover:text-slate-200 transition">Licencia CC BY-SA</a>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Generar botones de ejercicios dinámicamente desde el array exercises
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof exercises === 'undefined') return;
+
+            const sections = {
+                'relaciones_simples': { container: null, color: 'sky', concept: 'relaciones_simples' },
+                'atributos_especiales': { container: null, color: 'teal', concept: 'atributos_especiales' },
+                'participacion': { container: null, color: 'violet', concept: 'participacion' },
+                'autorelacion': { container: null, color: 'cyan', concept: 'autorelacion' },
+                'generalizacion': { container: null, color: 'purple', concept: 'generalizacion' }
+            };
+
+            // Encontrar/crear contenedores para cada sección
+            Object.keys(sections).forEach(concept => {
+                const section = document.querySelector(`[data-concept="${concept}"]`);
+                if (section) {
+                    sections[concept].container = section.querySelector('.grid') || section;
+                }
+            });
+
+            // Generar botones para cada ejercicio
+            const colorMap = {
+                'sky': { bg: 'rgb(2, 132, 199, 0.2)', border: 'rgb(2, 132, 199, 0.4)' },
+                'teal': { bg: 'rgb(13, 148, 136, 0.2)', border: 'rgb(13, 148, 136, 0.4)' },
+                'indigo': { bg: 'rgb(79, 70, 229, 0.2)', border: 'rgb(79, 70, 229, 0.4)' },
+                'violet': { bg: 'rgb(139, 92, 246, 0.2)', border: 'rgb(139, 92, 246, 0.4)' },
+                'cyan': { bg: 'rgb(6, 182, 212, 0.2)', border: 'rgb(6, 182, 212, 0.4)' },
+                'purple': { bg: 'rgb(168, 85, 247, 0.2)', border: 'rgb(168, 85, 247, 0.4)' },
+                'amber': { bg: 'rgb(217, 119, 6, 0.2)', border: 'rgb(217, 119, 6, 0.4)' }
+            };
+
+            exercises.forEa

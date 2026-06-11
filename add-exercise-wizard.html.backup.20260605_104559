@@ -82,23 +82,13 @@
                         <h2 class="text-2xl font-bold text-slate-900 mb-6">Paso 1: Información General</h2>
 
                         <div class="space-y-5">
-                            <div class="flex gap-3 items-end">
-                                <div style="flex-shrink:0; width:70px;">
-                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Emoji</label>
-                                    <input type="text" id="emoji" class="text-center text-xl px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                           placeholder="🏪"
-                                           oninput="updatePreview()"
-                                           style="width:85px; font-size:24px; background-color: #fef3c7; border: 2px solid #f59e0b;">
-                                    <p class="text-[10px] text-slate-500 mt-1">Clic + Win+. ó Cmd+Ctrl+Esp</p>
-                                </div>
-                                <div style="flex:1;">
-                                    <label class="block text-sm font-semibold text-slate-700 mb-2">📌 Título/Nombre</label>
-                                    <input type="text" id="title" class="input-field"
-                                           placeholder="ej: Farmacia Online"
-                                           value=""
-                                           oninput="updatePreview()"
-                                           style="background-color: #fef3c7; border: 2px solid #f59e0b;">
-                                </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">📌 Título/Nombre</label>
+                                <input type="text" id="title" class="input-field"
+                                       placeholder="ej: Farmacia Online"
+                                       value=""
+                                       oninput="updatePreview()"
+                                       style="background-color: #fef3c7; border: 2px solid #f59e0b;">
                             </div>
 
                             <div>
@@ -118,11 +108,7 @@
                                        style="background-color: #fef3c7; border: 2px solid #f59e0b;">
                             </div>
 
-                            <div class="flex items-center gap-6">
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" id="enabledCheck" checked onchange="updatePreview()">
-                                    <span class="text-sm text-slate-700 font-semibold">✅ Ejercicio activo</span>
-                                </label>
+                            <div>
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="checkbox" id="requireSubtypes" onchange="updatePreview()">
                                     <span class="text-sm text-slate-700">¿Tiene atributos especiales o ISA?</span>
@@ -153,7 +139,6 @@
                                     <p class="text-slate-700">⭕ Multivaluado: <code class="bg-white px-1">*Teléfono</code></p>
                                     <p class="text-slate-700">📊 Derivado: <code class="bg-white px-1">#Edad</code></p>
                                     <p class="text-slate-700 pt-2 border-t border-slate-300"><strong>Entidad débil:</strong> <code class="bg-white px-1">~EJEMPLAR</code> (prefijo ~)</p>
-                                    <p class="text-slate-700 text-[11px] text-slate-500">⚠️ Marcar la relación identificadora con <code class="bg-white px-1">^</code> (ver campo Relaciones)</p>
                                     <p class="text-slate-700 pt-2 border-t border-slate-300">ℹ️ Primer atributo = clave primaria</p>
                                 </div>
                                 <textarea id="entities-input" class="input-field" rows="8"
@@ -169,19 +154,13 @@
                                 </p>
                                 <div class="text-xs bg-slate-100 border border-slate-300 rounded p-3 mb-3 space-y-1">
                                     <p class="text-slate-700"><strong>Ejemplo:</strong> <code class="bg-white px-1">realiza | PACIENTE | CONSULTA | Fecha_consulta</code></p>
-                                    <p class="text-slate-700"><strong>Totalidad:</strong> Agregar <code class="bg-white px-1">!</code> al final de la entidad</p>
+                                    <p class="text-slate-700"><strong>Totalidad:</strong> Agregá <code class="bg-white px-1">!</code> al final de la entidad</p>
                                     <p class="text-slate-700">📌 <code class="bg-white px-1">trabaja | Empleado! | Empresa</code></p>
-                                    <p class="text-slate-700"><strong>Relación identificadora</strong> (doble rombo): Prefijo <code class="bg-white px-1">^</code></p>
-                                    <p class="text-slate-700">📌 <code class="bg-white px-1">^pertenece | LIBRO | ~EJEMPLAR</code></p>
-                                    <p class="text-slate-500 text-[11px]">Sin ^ todas las relaciones son simples, aunque haya entidad débil</p>
-                                    <p class="text-slate-700 pt-1 border-t border-slate-300"><strong>Agregación:</strong> Prefijo <code class="bg-white px-1">@</code> en el nombre</p>
+                                    <p class="text-slate-700"><strong>Agregación:</strong> Prefijo <code class="bg-white px-1">@</code> en el nombre</p>
                                     <p class="text-slate-700">📌 <code class="bg-white px-1">@ubicada | PROYECTO | asigna</code></p>
                                     <p class="text-slate-700"><strong>Atributos especiales:</strong></p>
                                     <p class="text-slate-700">🔹 Compuestos: <code class="bg-white px-1">Dirección(Calle, Nro, Esquina)</code></p>
                                     <p class="text-slate-700">🔹 Derivados: <code class="bg-white px-1">#Edad</code></p>
-                                    <p class="text-slate-700 pt-1 border-t border-slate-300"><strong>Autorelación:</strong> Ent1 = Ent2, roles con prefijo <code class="bg-white px-1">&gt;</code></p>
-                                    <p class="text-slate-700">📌 <code class="bg-white px-1">juega_con | CLUB | CLUB | &gt;locatario | &gt;visitante | Fecha</code></p>
-                                    <p class="text-slate-500 text-[11px]">Rombo más grande, líneas desde borde superior/inferior de la entidad</p>
                                 </div>
                                 <textarea id="relations-input" class="input-field" rows="6"
                                           oninput="updatePreview()"
@@ -220,15 +199,16 @@
                                 <p class="text-xs text-slate-600 mb-2">Selecciona qué concepto enseña este ejercicio</p>
                                 <select id="concept-select" class="input-field" style="width: 100%; background-color: #fef3c7; border: 2px solid #f59e0b;">
                                     <option value="">-- Seleccionar concepto --</option>
-                                    <option value="relaciones_simples">Relaciones simples (1:N)</option>
-                                    <option value="atributos_especiales">Atributos especiales / Relaciones N:N</option>
-                                    <option value="participacion">Totalidad / Participación</option>
-                                    <option value="generalizacion">Generalización / ISA</option>
+                                    <option value="entidades_atributos_simples">Entidades y atributos simples</option>
+                                    <option value="relaciones_simples">Relaciones 1:N (uno a muchos)</option>
+                                    <option value="relaciones_complejas">Relaciones N:N (muchos a muchos)</option>
+                                    <option value="atributos_especiales">Atributos especiales (compuesto, multivaluado, derivado)</option>
+                                    <option value="totalidad">Totalidad/Participación</option>
+                                    <option value="entidad_debil">Entidades débiles</option>
                                     <option value="autorelacion">Autorelación</option>
-                                    <option value="entidad_debil">Entidades débiles 🔒</option>
-                                    <option value="agregacion">Agregación 🔒</option>
+                                    <option value="agregacion">Agregación</option>
+                                    <option value="generalizacion">Generalización/Herencia (ISA)</option>
                                 </select>
-                                <p class="text-xs text-slate-500 mt-1">Los conceptos con 🔒 aparecen como "pendiente" en el inicio hasta que se agregue su sección.</p>
                             </div>
 
                             <div class="flex gap-2">
@@ -265,7 +245,7 @@
                         <p class="text-sm text-amber-900"><strong>📌 Próximos pasos:</strong></p>
                         <ol class="text-sm text-amber-900 list-decimal list-inside mt-2 space-y-1">
                             <li>Copia cada bloque de código (botón <strong>Copiar</strong>)</li>
-                            <li>Pégalo en <code>exercises.js</code> en el array correspondiente</li>
+                            <li>Pégalo en <code>script.js</code> en el array correspondiente</li>
                             <li>Agrega opciones en los <code>&lt;select&gt;</code> del HTML</li>
                             <li>Prueba en el navegador ✅</li>
                         </ol>
@@ -298,7 +278,7 @@
         function nextStep(from) {
             if (from === 1) {
                 if (!document.getElementById('title').value.trim()) {
-                    alert('❌ Por favor, completa el nombre del ejercicio.');
+                    alert('❌ Por favor, completa el título');
                     return;
                 }
                 if (!document.getElementById('description').value.trim()) {
@@ -477,9 +457,6 @@
                         isWeak = true;
                         name = name.substring(1);
                     }
-                    // Quitar ! del nombre si el usuario lo puso por error
-                    // (! solo es válido en el campo de Relaciones para marcar totalidad)
-                    name = name.replace(/!/g, '').trim();
 
                     const key = parts[1];
                     const attrs = [];
@@ -546,21 +523,16 @@
                     let ent2 = parts[2];
                     const attrs = parts.slice(3);
 
-                    // Detectar relación identificadora de entidad débil (^)
-                    let isDoubleRelation = false;
-                    if (name.startsWith('^')) {
-                        isDoubleRelation = true;
-                        name = name.substring(1);
-                    }
-
                     // Detectar agregación (@)
                     let isAggregate = false;
-                    let aggregateRelation = null;
+                    let aggregateRelation = null; // Relación/entidad que se agrupa
 
                     if (name.startsWith('@')) {
                         isAggregate = true;
                         name = name.substring(1);
+                        // La agregación usa ent2 como la relación que se agrupa
                         aggregateRelation = ent2;
+                        // ent2 se reemplaza con el nombre de lo que se está agrupando
                     }
 
                     // Detectar totalidad (!)
@@ -576,24 +548,10 @@
                         ent2 = ent2.slice(0, -1);
                     }
 
-                    // Detectar autorelación (ent1 === ent2)
-                    const isAutoRelation = (ent1 === ent2);
-                    let autoRole1 = '', autoRole2 = '';
-                    const relAttrs = [];
-                    attrs.forEach(attr => {
-                        if (attr.startsWith('>')) {
-                            if (!autoRole1) autoRole1 = attr.substring(1);
-                            else if (!autoRole2) autoRole2 = attr.substring(1);
-                        } else {
-                            relAttrs.push(attr);
-                        }
-                    });
-                    const finalAttrs = isAutoRelation ? relAttrs : attrs;
-
                     // Obtener cardinalidades
-                    const card = cardinalities[name] || { card1: 'N', card2: 'N' };
+                    const card = cardinalities[name] || { card1: 'N', card2: '1' };
 
-                    relationsData.push({ name, ent1, ent2, attrs: finalAttrs, idx, totalityLeft, totalityRight, isAggregate, aggregateRelation, isDoubleRelation, isAutoRelation, autoRole1, autoRole2, card1: card.card1, card2: card.card2 });
+                    relationsData.push({ name, ent1, ent2, attrs, idx, totalityLeft, totalityRight, isAggregate, aggregateRelation, card1: card.card1, card2: card.card2 });
                 }
             });
             return relationsData;
@@ -864,33 +822,7 @@
                 const midX = (ent1Pos.x + ent2Pos.x) / 2;
                 const midY = (ent1Pos.y + ent2Pos.y) / 2;
 
-                // ── Preview especial para autorelación ──────────────────────
-                if (rel.isAutoRelation) {
-                    const rx = ent1Pos.x + 120, ry = ent1Pos.y;
-                    const cxA = ent1Pos.x + 55;
-                    // Líneas top y bottom
-                    function pLine(x1,y1,x2,y2){const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);l.setAttribute('stroke','#94a3b8');l.setAttribute('stroke-width','2');svg.appendChild(l);}
-                    pLine(ent1Pos.x, ent1Pos.y-20, rx, ry-38);
-                    pLine(rx, ry+38, ent1Pos.x, ent1Pos.y+20);
-                    // Cardinalidades
-                    function pCard(x,y,txt){const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','12');c.setAttribute('fill','#fff');c.setAttribute('stroke','#6b7280');c.setAttribute('stroke-width','2');svg.appendChild(c);const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',x);t.setAttribute('y',y+4);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','11');t.setAttribute('font-weight','700');t.textContent=txt;svg.appendChild(t);}
-                    pCard(cxA, ent1Pos.y-28, rel.card1||'N');
-                    pCard(cxA, ent1Pos.y+28, rel.card2||'N');
-                    // Roles
-                    function pRole(x,y,txt){const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('font-size','9');t.setAttribute('fill','#64748b');t.setAttribute('font-weight','600');t.textContent=txt;svg.appendChild(t);}
-                    if (rel.autoRole1) pRole(cxA+16, ent1Pos.y-38, rel.autoRole1);
-                    if (rel.autoRole2) pRole(cxA+16, ent1Pos.y+42, rel.autoRole2);
-                    // Rombo más grande
-                    const d=document.createElementNS('http://www.w3.org/2000/svg','path');
-                    d.setAttribute('d',`M${rx} ${ry-40} L${rx+55} ${ry} L${rx} ${ry+40} L${rx-55} ${ry} Z`);
-                    d.setAttribute('fill','#fdf2f8');d.setAttribute('stroke','#ec4899');d.setAttribute('stroke-width','2');svg.appendChild(d);
-                    const rt=document.createElementNS('http://www.w3.org/2000/svg','text');rt.setAttribute('x',rx);rt.setAttribute('y',ry+4);rt.setAttribute('text-anchor','middle');rt.setAttribute('fill','#be123c');rt.setAttribute('font-weight','700');rt.setAttribute('font-size','11');rt.textContent=rel.name;svg.appendChild(rt);
-                    // Atributos de la relación
-                    rel.attrs.forEach((attr,ai)=>{const ax=rx+70,ay=ry-15+(ai*28);const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse');e.setAttribute('cx',ax);e.setAttribute('cy',ay);e.setAttribute('rx','30');e.setAttribute('ry','11');e.setAttribute('fill','#d1fae5');e.setAttribute('stroke','#10b981');e.setAttribute('stroke-width','1.5');svg.appendChild(e);const lt=document.createElementNS('http://www.w3.org/2000/svg','text');lt.setAttribute('x',ax);lt.setAttribute('y',ay+4);lt.setAttribute('text-anchor','middle');lt.setAttribute('font-size','9');lt.setAttribute('fill','#065f46');lt.textContent=attr;svg.appendChild(lt);});
-                    return;
-                }
-
-                // Línea 1 (relación normal)
+                // Línea 1
                 const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line1.setAttribute('x1', ent1Pos.x + 60);
                 line1.setAttribute('y1', ent1Pos.y);
@@ -948,10 +880,10 @@
                 cardText1.setAttribute('fill', '#000');
                 cardText1.setAttribute('font-weight', '700');
                 cardText1.setAttribute('font-size', '12');
-                cardText1.textContent = rel.card1 || 'N';
+                cardText1.textContent = 'N';
                 svg.appendChild(cardText1);
 
-                // Cardinalidad derecha
+                // Cardinalidad 1 (derecha)
                 const circle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 circle2.setAttribute('cx', ent2Pos.x - 45);
                 circle2.setAttribute('cy', ent2Pos.y - 15);
@@ -968,34 +900,13 @@
                 cardText2.setAttribute('fill', '#000');
                 cardText2.setAttribute('font-weight', '700');
                 cardText2.setAttribute('font-size', '12');
-                cardText2.textContent = rel.card2 || '1';
+                cardText2.textContent = '1';
                 svg.appendChild(cardText2);
-
-                // Círculo de totalidad en el preview (cuando la relación tiene !)
-                function drawTotalityCircle(ex, ey, rx, ry, hw, hh) {
-                    const dx = ex - rx, dy = ey - ry;
-                    const len = Math.sqrt(dx*dx + dy*dy);
-                    if (len < 0.5) return;
-                    const ndx = dx/len, ndy = dy/len;
-                    const t = 1 / (Math.abs(ndx)/hw + Math.abs(ndy)/hh);
-                    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    c.setAttribute('cx', rx + ndx * t);
-                    c.setAttribute('cy', ry + ndy * t);
-                    c.setAttribute('r', '5');
-                    c.setAttribute('fill', '#1e293b');
-                    c.setAttribute('stroke', '#a78bfa');
-                    c.setAttribute('stroke-width', '1.5');
-                    svg.appendChild(c);
-                }
-                const hw = 45, hh = 30; // semieje del rombo en el preview
-                if (rel.totalityLeft)  drawTotalityCircle(ent1Pos.x, ent1Pos.y, midX, midY, hw, hh);
-                if (rel.totalityRight) drawTotalityCircle(ent2Pos.x, ent2Pos.y, midX, midY, hw, hh);
             });
         }
 
         function generateCode() {
-            const emoji = document.getElementById('emoji').value.trim() || '🏫';
-            const title = `${emoji} ${document.getElementById('title').value.trim()}`;
+            const title = document.getElementById('title').value;
             // Leer la descripción del preview editable (lo que el usuario modificó)
             // Si no existe, usar el campo original
             const previewEl = document.getElementById('preview-description-step2');
@@ -1004,7 +915,6 @@
             const hint = document.getElementById('hint').value;
             const concept = document.getElementById('concept-select').value;
             const requireSubtypes = document.getElementById('requireSubtypes').checked;
-            const enabled = document.getElementById('enabledCheck')?.checked ?? true;
 
             if (!concept) {
                 alert('⚠️ Por favor selecciona un concepto E-R antes de continuar.');
@@ -1031,44 +941,23 @@
             relationsData.forEach(r => {
                 wordBank.push(r.name);
                 r.attrs.forEach(a => wordBank.push(a));
-                // Roles de autorelación
-                if (r.autoRole1) wordBank.push(r.autoRole1);
-                if (r.autoRole2) wordBank.push(r.autoRole2);
                 // Usar cardinalidades parseadas de relationsData
                 const card1 = r.card1 || 'N';
-                const card2 = r.card2 || 'N';
+                const card2 = r.card2 || '1';
                 wordBank.push(card1);
                 wordBank.push(card2);
             });
 
-            const exerciseCode = generateExerciseCode(title, description, hint, wordBank, concept, enabled);
+            const exerciseCode = generateExerciseCode(title, description, hint, wordBank, concept);
             const analyzeDataCode = generateAnalyzeDataCode(description);
             const configCode = `{ requireSubtypes: ${requireSubtypes} }`;
-
-            // Mapa de concepts a secciones del index.html
-            const conceptSections = {
-                'relaciones_simples':   'Entidades, atributos y relaciones',
-                'atributos_especiales': 'Atributos especiales',
-                'participacion':        'Totalidad (participación)',
-                'generalizacion':       'Generalización/Categorización (ISA)',
-                'autorelacion':         'Autorelación',
-                'entidad_debil':        null,
-                'agregacion':           null
-            };
-            const sectionName = conceptSections[concept];
-            const indexInfo = sectionName
-                ? `✅ Aparecerá automáticamente en la sección <strong>"${sectionName}"</strong> del inicio — no se requiere código adicional en <code>index.html</code>.`
-                : `⚠️ El concepto <strong>"${concept}"</strong> aún no tiene sección activa en <code>index.html</code> (aparece como 🔒 pendiente). El ejercicio funciona desde <code>er-designer.html</code> directamente.`;
-
-            // Opción HTML para el select de er-designer.html
-            const titleNoEmoji = title.replace(/^[\p{Emoji}\s]+/u, '').trim();
-            const htmlOptionCode = `<option value="N">${title}</option>\n<!-- Reemplazar N con el índice real del ejercicio en el array exercises[] de script.js -->`;
+            const htmlOptionCode = `<option value="${Object.keys(entitiesData).length - 1}">${title}</option>`;
 
             const output = `
 <div class="space-y-6">
     <div>
-        <h3 class="font-bold text-slate-900 mb-3">📝 1. Código del Ejercicio</h3>
-        <p class="text-xs text-slate-600 mb-2">Pegar al final de <code class="bg-slate-100 px-2 py-1 rounded">exercises = [...]</code> en <strong>exercises.js</strong>, antes del cierre <code>]</code> y separado por coma.</p>
+        <h3 class="font-bold text-slate-900 mb-3">📝 Código del Ejercicio</h3>
+        <p class="text-xs text-slate-600 mb-2">Copiar al final de <code class="bg-slate-100 px-2 py-1 rounded">exercises = [...]</code> en <strong>script.js</strong> (antes del cierre <code>]</code>), separado por coma</p>
         <div class="code-block">
 ${escapeHtml(exerciseCode)}
         </div>
@@ -1076,8 +965,8 @@ ${escapeHtml(exerciseCode)}
     </div>
 
     <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-        <p class="text-sm font-semibold text-amber-900 mb-2">📊 2. Análisis de Términos</p>
-        <p class="text-xs text-amber-800 mb-2">Pegar al final de <code class="bg-white px-2 py-1 rounded">analyzeData = [...]</code>, antes del cierre <code>]</code> y separado por coma.</p>
+        <p class="text-sm font-semibold text-amber-900 mb-2">📊 Análisis de Términos</p>
+        <p class="text-xs text-amber-800 mb-2">Copiar al final de <code class="bg-white px-2 py-1 rounded">analyzeData = [...]</code> (antes del cierre <code>]</code>), separado por coma</p>
         <div class="code-block text-xs">
 ${escapeHtml(analyzeDataCode)}
         </div>
@@ -1085,8 +974,8 @@ ${escapeHtml(analyzeDataCode)}
     </div>
 
     <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <p class="text-sm font-semibold text-blue-900 mb-2">⚙️ 3. Configuración</p>
-        <p class="text-xs text-blue-800 mb-2">Pegar al final de <code class="bg-white px-2 py-1 rounded">analyzeConfig = [...]</code>, antes del cierre <code>]</code> y separado por coma.</p>
+        <p class="text-sm font-semibold text-blue-900 mb-2">⚙️ Configuración</p>
+        <p class="text-xs text-blue-800 mb-2">Copiar al final de <code class="bg-white px-2 py-1 rounded">analyzeConfig = [...]</code> (antes del cierre <code>]</code>), separado por coma</p>
         <div class="code-block text-xs">
 ${escapeHtml(configCode)}
         </div>
@@ -1094,17 +983,12 @@ ${escapeHtml(configCode)}
     </div>
 
     <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-        <p class="text-sm font-semibold text-green-900 mb-2">🔽 4. Selector en er-designer.html</p>
-        <p class="text-xs text-green-800 mb-2">Agregar en los dos <code class="bg-white px-2 py-1 rounded">&lt;select&gt;</code> de <strong>er-designer.html</strong> (reemplazar N con el índice real).</p>
+        <p class="text-sm font-semibold text-green-900 mb-2">🎯 HTML (Dropdowns)</p>
+        <p class="text-xs text-green-800 mb-2">Agregar en los dos <code class="bg-white px-2 py-1 rounded">&lt;select&gt;</code> de <strong>er-designer.html</strong></p>
         <div class="code-block text-xs">
 ${escapeHtml(htmlOptionCode)}
         </div>
         <button class="btn-primary text-sm mt-2 copy-btn" data-text="${encodeURIComponent(htmlOptionCode)}">📋 Copiar</button>
-    </div>
-
-    <div class="p-4 bg-slate-50 border border-slate-300 rounded-lg">
-        <p class="text-sm font-semibold text-slate-800 mb-2">🏠 5. Página de inicio (index.html)</p>
-        <p class="text-xs text-slate-700">${indexInfo}</p>
     </div>
 </div>
             `;
@@ -1127,7 +1011,7 @@ ${escapeHtml(htmlOptionCode)}
             });
         }
 
-        function generateExerciseCode(title, description, hint, wordBank, concept, enabled = true) {
+        function generateExerciseCode(title, description, hint, wordBank, concept) {
             const entities = Object.entries(entitiesData);
             const numEntities = entities.length;
             const numRelations = relationsData.length;
@@ -1233,33 +1117,6 @@ ${escapeHtml(htmlOptionCode)}
                 const ent2Data = entitiesData[rel.ent2];
                 const isDoubleRelation = ent1Data.isWeak || ent2Data.isWeak;
 
-                // ── Autorelación: posición y código especial ──────────────────────────
-                if (rel.isAutoRelation) {
-                    const autoRelX = Math.round((ent1Pos.x + 25) * 10) / 10;
-                    const autoCardX = Math.round(((ent1Pos.x + autoRelX) / 2) * 10) / 10;
-                    // Rombo más grande (w:100, h:100)
-                    nodes.push(`        { id: "${relId}", type: "relation", correctValue: "${rel.name}", x: ${autoRelX}, y: 50, w: 100, h: 100 }`);
-                    // Conexiones con roles
-                    const r1 = rel.autoRole1 ? `, role: "${rel.autoRole1}"` : '';
-                    const r2 = rel.autoRole2 ? `, role: "${rel.autoRole2}"` : '';
-                    connections.push(`        { from: "${ent1Pos.id}", to: "${relId}"${r1} }`);
-                    connections.push(`        { from: "${relId}", to: "${ent1Pos.id}"${r2} }`);
-                    // Cardinalidades: una arriba y una abajo de la línea central
-                    const cTopId = `c_${idx}_top`, cBotId = `c_${idx}_bot`;
-                    nodes.push(`        { id: "${cTopId}", type: "cardinality", correctValue: "${rel.card1||'N'}", x: ${autoCardX}, y: 20, w: 30, h: 30 }`);
-                    nodes.push(`        { id: "${cBotId}", type: "cardinality", correctValue: "${rel.card2||'N'}", x: ${autoCardX}, y: 40, w: 30, h: 30 }`);
-                    connections.push(`        { from: "${cTopId}", to: "${relId}" }`);
-                    connections.push(`        { from: "${cBotId}", to: "${relId}" }`);
-                    // Atributos de la relación
-                    rel.attrs.forEach((attr, aIdx) => {
-                        const relAttrId = `a_${nodeIdCounter.a++}`;
-                        nodes.push(`        { id: "${relAttrId}", type: "attribute", correctValue: "${attr}", x: ${Math.round((autoRelX + 12 + aIdx*12) * 10)/10}, y: ${38 + aIdx*14}, w: 92, h: 40 }`);
-                        connections.push(`        { from: "${relAttrId}", to: "${relId}" }`);
-                    });
-                    return; // saltar el código estándar de relación
-                }
-
-                // ── Relación normal ───────────────────────────────────────────────────
                 let relStr = `        { id: "${relId}", type: "relation"`;
                 if (isDoubleRelation) relStr += `, isDoubleRelation: true`;
                 if (rel.totalityLeft) relStr += `, totalityLeft: true`;
@@ -1288,19 +1145,6 @@ ${escapeHtml(htmlOptionCode)}
 
                 connections.push(`        { from: "${cardN}", to: "${relId}" }`);
                 connections.push(`        { from: "${card1}", to: "${relId}" }`);
-
-                // Nodos de totalidad interactivos (si la relación tiene !)
-                // Generan el panel S/N para que el estudiante elija participación total o parcial
-                if (rel.totalityLeft || rel.totalityRight) {
-                    const tLeftId  = `t_${idx}_left`;
-                    const tRightId = `t_${idx}_right`;
-                    const tLeftX   = cardX1 + (relX - cardX1) * 0.6;
-                    const tRightX  = cardXn + (ent2Pos.x - cardXn) * 0.4;
-                    const tValLeft  = rel.totalityLeft  ? 'S' : 'N';
-                    const tValRight = rel.totalityRight ? 'S' : 'N';
-                    nodes.push(`        { id: "${tLeftId}",  type: "totalidad", correctValue: "${tValLeft}",  x: ${Math.round(tLeftX  * 10) / 10}, y: 45, w: 28, h: 24 }`);
-                    nodes.push(`        { id: "${tRightId}", type: "totalidad", correctValue: "${tValRight}", x: ${Math.round(tRightX * 10) / 10}, y: 45, w: 28, h: 24 }`);
-                }
 
                 // Atributos de relación - distribuidos debajo de la relación
                 rel.attrs.forEach((attr, aIdx) => {
@@ -1331,7 +1175,7 @@ ${connections.join(',\n')}
     // METADATOS
     concept: "${concept}",
     availableFor: ["class", "home", "eval"],
-    enabled: ${enabled}
+    enabled: true
 }`;
             return code;
         }
@@ -1368,40 +1212,4 @@ ${connections.join(',\n')}
                         // Procesar atributos
                         const attrsArray = attrsPart.replace(/\.+$/, '').split(/,\s+y\s+|,\s+/);
                         attrsArray.forEach((attr, idx) => {
-                            attr = attr.trim();
-                            if (!attr) return;
-                            if (idx > 0) segments.push('", "');
-                            segments.push(`{word:"${escapeString(attr)}",type:"atributo",attrType:"simple"}`);
-                        });
-                        segments.push('".\n"');
-                    }
-                } else if (line.includes('puede ')) {
-                    // Es una línea de relación — extraer el verbo relación como token
-                    // Ej: "• CLUB puede juega_con muchos CLUBES." → ["• CLUB puede ", {word:"juega_con",...}, " muchos CLUBES.\n"]
-                    const puedeIdx = line.indexOf('puede ');
-                    const before = line.substring(0, puedeIdx + 6); // incluye "puede "
-                    const rest = line.substring(puedeIdx + 6);
-                    const relWordMatch = rest.match(/^([\w_]+)(.*)/s);
-                    if (relWordMatch) {
-                        const relWord = relWordMatch[1];
-                        const after = relWordMatch[2].trimEnd();
-                        segments.push(`"${escapeString(before)}"`);
-                        segments.push(`{word:"${escapeString(relWord)}",type:"relacion"}`);
-                        segments.push(`"${escapeString(after)}\\n"`);
-                    } else {
-                        segments.push(`"${escapeString(line)}\\n"`);
-                    }
-                } else {
-                    segments.push(`"${escapeString(line)}\\n"`);
-                }
-            });
-
-            return `[\n    ${segments.join(',\n    ')}\n]`;
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        }
-    </script>
-</body>
-</html>
+                            attr = attr.tr
