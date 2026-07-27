@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>DB-Lab — Entrenador Conceptual</title>
+    <title>E-R Constructor Pro — Entrenador Conceptual</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -15,35 +12,44 @@
 
 
     <!-- ══════════════════════════════════════════ HEADER -->
-    <header class="no-print bg-slate-900 text-white py-4 px-6 shadow-xl border-b border-slate-800 sticky top-0 z-50">
+    <header class="no-print bg-slate-900 text-white py-4 px-6 shadow-xl border-b border-slate-800">
         <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
-            <a href="index.html" class="hover:opacity-80 transition">
-                <img src="logo plataforma BD.png" alt="DB-Lab UTU" class="h-20">
-            </a>
-            <div class="px-3.5 py-2 bg-slate-800 rounded-xl text-xs font-bold border border-slate-700 whitespace-nowrap">
-                Ejercicio <span id="progress-indicator" class="text-sky-300 font-extrabold ml-0.5">1 de 4</span>
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="hover:opacity-80 transition flex-shrink-0">
+                    <img src="logo plataforma BD.png" alt="DB-Lab UTU" class="h-14">
+                </a>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">Modelado Entidad-Relación</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="index.html"
+                    class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl border border-slate-700 transition flex items-center gap-1.5">
+                    🏠 Inicio
+                </a>
+                <div class="px-3.5 py-2 bg-slate-800 rounded-xl text-xs font-bold border border-slate-700 whitespace-nowrap">
+                    Ejercicio <span id="progress-indicator" class="text-indigo-400 font-extrabold ml-0.5">1 de 14</span>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- ══ Stage navigation ═══════════════════════════════ -->
-    <nav class="no-print bg-slate-900 border-b border-slate-800 px-6 py-3 sticky top-[96px] z-40">
+    <nav class="no-print bg-slate-900 border-b border-slate-800 px-6 py-3">
         <div class="max-w-[1600px] mx-auto flex items-center gap-2">
             <button id="tab-analyze" onclick="setStage('analyze')" class="stage-tab active">📋 Analizar el problema</button>
             <svg class="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             <button id="tab-diagram" onclick="setStage('diagram')" class="stage-tab">🔗 Diseño E-R</button>
             <svg class="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <button id="tab-tables" disabled class="stage-tab">📊 Pasaje a tablas 🔒</button>
-            <svg class="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <button id="tab-normalization" disabled class="stage-tab">🔧 Normalización 🔒</button>
-            <svg class="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <button id="tab-sql" disabled class="stage-tab">💾 SQL 🔒</button>
+            <button id="tab-tables" onclick="setStage('tables')" disabled class="stage-tab">📊 Pasaje a tablas 🔒</button>
 
             <div class="ml-auto flex items-center gap-2">
-                <button onclick="showConcepts()" title="Conceptos E-R"
-                    class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:border-sky-400 transition text-sm font-bold">📖</button>
                 <button onclick="showTutorial()" title="¿Cómo usar la herramienta?"
-                    class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:border-sky-400 transition text-sm font-bold">?</button>
+                    class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500 transition text-sm font-bold">?</button>
+                <button onclick="toggleAccessibility()" id="contrast-btn" title="Alto contraste"
+                    class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500 transition">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20" stroke-dasharray="3 3"/></svg>
+                </button>
             </div>
         </div>
     </nav>
@@ -52,48 +58,45 @@
     <div id="stage-analyze" class="no-print flex-1 max-w-[1600px] w-full mx-auto p-4 lg:p-5 flex flex-col lg:flex-row gap-5" style="min-height:640px;">
 
         <!-- Texto limpio del problema -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col gap-3 flex-1">
-            <div class="flex items-center justify-between pb-2.5 border-b border-slate-800 flex-wrap gap-2">
-                <h2 class="text-sky-400 font-bold text-sm uppercase tracking-wider">📖 Enunciado</h2>
-                <div class="flex items-center gap-2">
-                    <button onclick="zoomText(-1)" title="Reducir" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-bold transition">−</button>
-                    <span id="zoom-level" class="text-xs text-slate-400 w-12 text-center">100%</span>
-                    <button onclick="zoomText(1)" title="Aumentar" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-bold transition">+</button>
-                    <select id="analyze-select" onchange="loadExercise(this.value)"
-                        class="p-2 bg-slate-800 border border-slate-700 rounded-xl font-semibold text-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
-                        <option value="0">🔧 Taller Mecánico</option>
-                        <option value="1">📚 Biblioteca Escolar</option>
-                        <option value="2">🛒 Tienda Online</option>
-                        <option value="3">🌐 Red Social</option>
-                        <option value="4">🎬 Plataforma Streaming</option>
-                        <option value="5">🏥 Sistema Hospitalario</option>
-                        <option value="6">🏫 Institución educativa</option>
-                        <option value="7">🏫 Colegio</option>
-                        <option value="8">🎬 Película</option>
-                        <option value="9">🏫 Fútbol</option>
-
-                        <!-- ══ En caso de agregar mas ejercicios aquí va una linea ════════════════════════════ -->
-                    </select>
-                </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col gap-3 lg:flex-[3]">
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-800">
+                <h2 class="text-indigo-400 font-bold text-sm uppercase tracking-wider">📖 Enunciado</h2>
+                <select id="analyze-select" onchange="loadExercise(this.value)"
+                    class="p-2 bg-slate-800 border border-slate-700 rounded-xl font-semibold text-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    <option value="0">🔧 Taller Mecánico</option>
+                    <option value="1">📚 Biblioteca Escolar</option>
+                    <option value="2">🛒 Tienda Online</option>
+                    <option value="3">🌐 Red Social</option>
+                    <option value="4">📺 Plataforma Streaming</option>
+                    <option value="5">🏥 Sistema Hospitalario</option>
+                    <option value="6">🏫 Institución Educativa</option>
+                    <option value="7">🏫 Colegio</option>
+                    <option value="8">🎬 Videoclub</option>
+                    <option value="9">⚽ Fútbol</option>
+                    <option value="10">🎵 Música</option>
+                    <option value="11">📖 Biblioteca 2</option>
+                    <option value="12">🔩 Almacén de Piezas</option>
+                    <option value="13">🏫 Instituto</option>
+                </select>
             </div>
-            <div id="analyze-text" class="text-sm text-slate-200 leading-7 whitespace-pre-wrap flex-1 pt-1 overflow-y-auto" style="font-size: 1em;"></div>
+            <div id="analyze-text" class="text-sm text-slate-200 leading-7 whitespace-pre-wrap flex-1 pt-1"></div>
         </div>
 
         <!-- Panel de clasificación -->
-        <div class="flex flex-col gap-3 flex-1 min-w-[350px]">
+        <div class="flex flex-col gap-3 lg:flex-[2]">
 
             <!-- Fichas a clasificar -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-2.5">
                 <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Términos a identificar</p>
-                <div class="flex items-start gap-2 bg-emerald-950/40 border border-emerald-800/40 rounded-xl px-3 py-2.5">
+                <div class="flex items-start gap-2 bg-indigo-950/40 border border-indigo-800/40 rounded-xl px-3 py-2.5">
                     <span class="text-base flex-shrink-0">👆</span>
-                    <p class="text-xs text-emerald-200 leading-relaxed font-medium">Hacé clic en cada ficha naranja y clasificala como <strong>Entidad</strong>, <strong>Atributo</strong> o <strong>Relación</strong>. Podés consultar el <button onclick="showGlossary()" class="underline hover:text-white transition">glosario</button> si tenés dudas.</p>
+                    <p class="text-xs text-indigo-200 leading-relaxed font-medium">Hacer clic en cada ficha y clasificarla como <strong>Entidad</strong>, <strong>Atributo</strong> o <strong>Relación</strong>. Consultar el <button onclick="showGlossary()" class="underline hover:text-white transition">glosario</button> ante dudas.</p>
                 </div>
                 <div id="terms-pool" class="flex flex-wrap gap-2 pt-1 min-h-[2rem]"></div>
             </div>
 
             <!-- Columnas de clasificación -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 auto-cols-fr">
+            <div class="grid grid-cols-3 gap-2">
                 <div class="bg-blue-950/40 border border-blue-800/40 rounded-xl p-3 flex flex-col gap-1.5">
                     <p class="text-[10px] font-extrabold text-blue-300 uppercase tracking-widest flex items-center gap-1.5"><svg width="14" height="10"><rect x="1" y="1" width="12" height="8" fill="none" stroke="#3b82f6" stroke-width="1.8"/></svg>Entidades</p>
                     <div id="classified-entities" class="flex flex-col gap-1 min-h-[2rem]"></div>
@@ -109,13 +112,13 @@
             </div>
 
             <button id="btn-validate-analysis" onclick="validateAnalysis()"
-                class="py-3.5 bg-teal-700 hover:bg-teal-600 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 transition active:scale-[0.98] shadow-lg">
+                class="py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 transition active:scale-[0.98] shadow-lg">
                 📝 Validar clasificación
             </button>
             <div id="analyze-feedback" class="hidden p-4 rounded-2xl text-center font-bold text-sm border"></div>
-            <button id="btn-go-diagram" onclick="setStage('diagram')"
-                class="py-3 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-2 transition border border-sky-600">
-                🔗 Ir al Diseño E-R
+            <button id="btn-go-diagram" onclick="setStage('diagram')" disabled
+                class="py-3 bg-slate-700/50 text-slate-500 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 cursor-not-allowed border border-slate-700">
+                🔒 Ir al Diseño E-R — evaluar primero
             </button>
         </div>
     </div>
@@ -129,39 +132,35 @@
 
             <!-- Selector de caso -->
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-md">
-                <label class="block text-[10px] font-extrabold text-sky-400 uppercase tracking-widest mb-2">
+                <label class="block text-[10px] font-extrabold text-indigo-400 uppercase tracking-widest mb-2">
                     Caso de Estudio
                 </label>
                 <select id="exercise-select" onchange="loadExercise(this.value)"
-                    class="w-full p-3 bg-slate-800 border border-slate-700 rounded-xl font-semibold text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
+                    class="w-full p-3 bg-slate-800 border border-slate-700 rounded-xl font-semibold text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                     <option value="0">🔧 Taller Mecánico</option>
                     <option value="1">📚 Biblioteca Escolar</option>
                     <option value="2">🛒 Tienda Online</option>
-                    <option value="3">🌐 Red Social</option>
-                    <option value="4">🎬 Plataforma Streaming</option>
+                    <option value="3">🌐 Red Social (ISA)</option>
+                    <option value="4">📺 Plataforma Streaming</option>
                     <option value="5">🏥 Sistema Hospitalario</option>
-                    <option value="6">🏫 Institución educativa</option>
+                    <option value="6">🏫 Institución Educativa</option>
                     <option value="7">🏫 Colegio</option>
-                    <option value="8">🎬 Película</option>
-                    <option value="9">🏫 Fútbol</option>
-<!-- ══ En caso de agregar mas ejercicios aquí va una linea ════════════════════════════ -->
+                    <option value="8">🎬 Videoclub</option>
+                    <option value="9">⚽ Fútbol</option>
+                    <option value="10">🎵 Música</option>
+                    <option value="11">📖 Biblioteca 2</option>
+                    <option value="12">🔩 Almacén de Piezas</option>
+                    <option value="13">🏫 Instituto</option>
                 </select>
             </div>
 
             <!-- Requerimientos del problema -->
             <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-md flex flex-col gap-3">
-                <div class="flex items-center justify-between pb-2.5 border-b border-slate-800">
-                    <h2 class="text-sky-400 font-bold text-sm uppercase tracking-wider flex items-center gap-2">
-                        📖 Requerimientos del Problema
-                    </h2>
-                    <div class="flex items-center gap-1.5">
-                        <button onclick="zoomDescription(-1)" title="Reducir" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-bold transition">−</button>
-                        <span id="desc-zoom-level" class="text-xs text-slate-400 w-10 text-center">100%</span>
-                        <button onclick="zoomDescription(1)" title="Aumentar" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-bold transition">+</button>
-                    </div>
-                </div>
+                <h2 class="text-indigo-400 font-bold text-sm uppercase tracking-wider flex items-center gap-2 pb-2.5 border-b border-slate-800">
+                    📖 Requerimientos del Problema
+                </h2>
                 <div id="problem-description"
-                    class="text-xs leading-relaxed text-slate-400 max-h-[400px] overflow-y-auto pr-1" style="font-size: 1em;">
+                    class="text-xs leading-relaxed text-slate-400 max-h-52 overflow-y-auto pr-1">
                 </div>
                 <button onclick="toggleHint()"
                     class="flex items-center gap-2 text-xs text-amber-400 hover:text-amber-300 font-bold group mt-1 w-fit transition">
@@ -187,13 +186,33 @@
             <!-- Botones de acción -->
             <div class="flex flex-col gap-2">
                 <button onclick="checkAnswers()"
-                    class="w-full py-3.5 bg-teal-700 hover:bg-teal-600 text-white font-bold rounded-2xl shadow-lg active:scale-[0.98] transition flex items-center justify-center gap-2 text-sm">
+                    class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-lg active:scale-[0.98] transition flex items-center justify-center gap-2 text-sm">
                     📝 Corregir Diagrama
                 </button>
                 <button id="png-btn" onclick="saveAsPNG()"
-                    class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-2 text-xs">
+                    class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-2 text-xs">
                     🖼️ Guardar como PNG
                 </button>
+
+                <!-- Subir imagen MER → desbloquea Pasaje a Tablas -->
+                <label id="mer-upload-btn" class="w-full py-3 bg-amber-800/40 hover:bg-amber-700/50 text-amber-200 font-semibold rounded-xl transition text-xs flex items-center justify-center gap-2 cursor-pointer border border-amber-700/40">
+                    <span id="mer-upload-text">🖼️ Subir MER → habilita Pasaje a Tablas</span>
+                    <input type="file" accept="image/png,image/jpg,image/jpeg,image/gif,image/webp"
+                        class="hidden" onchange="handleMerRefImage(event)">
+                </label>
+
+                <!-- Panel imagen MER de referencia (colapsable) -->
+                <div id="mer-ref-panel-diagram" class="hidden bg-slate-900 border border-amber-700/30 rounded-xl p-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-amber-300 text-xs font-bold">🖼️ MER cargado — Pasaje a Tablas desbloqueado ✓</span>
+                        <button onclick="toggleMerRefPanelDiagram()" class="text-slate-500 hover:text-slate-300 text-sm">✕</button>
+                    </div>
+                    <img id="mer-ref-img-diagram" src="" alt="MER de referencia"
+                        class="w-full rounded-lg border border-slate-700 cursor-zoom-in"
+                        style="max-height:300px;object-fit:contain;"
+                        onclick="this.style.maxHeight = this.style.maxHeight==='none' ? '300px' : 'none'">
+                </div>
+
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="resetExercise()"
                         class="py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold rounded-xl transition text-xs flex items-center justify-center gap-1">
@@ -209,19 +228,18 @@
                     🏠 Elegir otro ejercicio
                 </a>
             </div>
-
         </section>
 
         <!-- ── Divisor redimensionable ─────────────────────── -->
         <div id="resize-handle"
              class="no-print hidden lg:flex flex-shrink-0 items-center justify-center cursor-col-resize group relative select-none"
              style="width:14px;margin:0 3px;">
-            <div class="w-px h-full bg-slate-700 group-hover:bg-sky-400 transition-colors duration-150 rounded-full"></div>
+            <div class="w-px h-full bg-slate-700 group-hover:bg-indigo-500 transition-colors duration-150 rounded-full"></div>
             <div class="absolute top-1/2 -translate-y-1/2 bg-slate-900 group-hover:bg-slate-800
-                        border border-slate-700 group-hover:border-sky-400
+                        border border-slate-700 group-hover:border-indigo-500
                         rounded-full w-5 h-10 flex items-center justify-center
                         transition-all duration-150 shadow-sm z-50">
-                <svg width="6" height="18" viewBox="0 0 6 18" class="text-slate-500 group-hover:text-sky-300">
+                <svg width="6" height="18" viewBox="0 0 6 18" class="text-slate-500 group-hover:text-indigo-400">
                     <circle cx="1.5" cy="3"  r="1.2" fill="currentColor"/>
                     <circle cx="4.5" cy="3"  r="1.2" fill="currentColor"/>
                     <circle cx="1.5" cy="9"  r="1.2" fill="currentColor"/>
@@ -293,17 +311,14 @@
 
             <!-- ── Lienzo principal ── -->
             <div id="er-canvas"
-                class="canvas-grid relative rounded-xl border border-slate-700 flex-shrink-0"
-                style="height:380px; overflow-x: auto; overflow-y: auto;">
+                class="canvas-grid relative rounded-xl border border-slate-700 overflow-auto flex-shrink-0"
+                style="height:540px;">
                 <svg id="svg-connectors"
                     class="absolute inset-0 pointer-events-none z-0"
                     style="width:100%;height:100%;overflow:visible;"></svg>
                 <div id="diagram-nodes"
                     class="absolute inset-0 z-10"
-                    style="min-width:100%;min-height:100%;width:100%;height:100%;"></div>
-                <svg id="svg-top"
-                    class="absolute inset-0 pointer-events-none z-20"
-                    style="width:100%;height:100%;overflow:visible;"></svg>
+                    style="min-width:1060px;min-height:100%;width:100%;height:100%;"></div>
             </div>
 
             <!-- ── Feedback de corrección ── -->
@@ -311,21 +326,14 @@
                 class="no-print hidden mt-4 p-4 rounded-2xl text-center font-bold text-sm border">
             </div>
 
-            <!-- ── Banco de Elementos (abajo del diagrama) ── -->
+            <!-- ── Banco de Elementos (debajo del diagrama) ── -->
             <div class="no-print mt-4 p-4 bg-slate-800 rounded-xl border border-slate-700 flex flex-col gap-2">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-teal-400 font-bold text-xs uppercase tracking-wider">
-                        ✂️ Banco de Elementos
-                    </h3>
-                </div>
-                <div class="flex items-start gap-2 bg-emerald-950/40 border border-emerald-800/40 rounded-xl px-3 py-2.5">
-                    <span class="text-base flex-shrink-0">👆</span>
-                    <p class="text-xs text-emerald-200 leading-relaxed font-medium">Seleccioná un elemento del banco y hacé clic en el diagrama para colocarlo. Continúa hasta completar todas las figuras.</p>
+                <div class="flex items-center gap-2">
+                    <h3 class="text-emerald-400 font-bold text-xs uppercase tracking-wider">✂️ Banco de Elementos</h3>
+                    <span class="text-xs text-slate-500">— Seleccionar un elemento y hacer clic en el hueco del diagrama.</span>
                 </div>
                 <div id="word-bank" class="flex flex-wrap gap-2 pt-1"></div>
-                <div id="selection-status"
-                    class="text-xs font-extrabold text-yellow-400 min-h-[1.25rem] mt-1">
-                </div>
+                <div id="selection-status" class="text-xs font-extrabold text-yellow-400 min-h-[1.25rem]"></div>
             </div>
 
             <!-- ── Panel de Totalidad/Participación ── -->
@@ -335,94 +343,68 @@
                 </div>
                 <div id="totalidad-questions" class="space-y-2"></div>
             </div>
-
         </section>
-
     </main>
 
     <!-- ══ Pasaje a tablas ════════════════════════════════ -->
-    <div id="stage-tables" class="no-print hidden flex-1 max-w-[1600px] w-full mx-auto p-4 lg:p-5 flex items-center justify-center" style="min-height:640px;">
-        <div class="text-center flex flex-col items-center gap-4">
-            <span class="text-6xl">📊</span>
-            <h2 class="text-2xl font-extrabold text-white">Pasaje a Tablas</h2>
-            <p class="text-slate-400 text-sm max-w-xs">Convertí tu modelo E-R en tablas relacionales. Esta sección estará disponible próximamente.</p>
-            <span class="px-4 py-2 bg-rose-950/60 border border-rose-700/40 text-rose-300/80 text-sm font-extrabold rounded-full animate-pulse">🔒 Próximamente</span>
-        </div>
-    </div>
+    <!-- Contenido generado dinámicamente por tables.js → renderTablesPanel() -->
+    <div id="stage-tables" class="no-print hidden flex-1 flex flex-col" style="min-height:640px;"></div>
 
     <!-- Footer -->
     <footer class="no-print bg-slate-950 text-slate-500 text-xs py-4 text-center border-t border-slate-800">
         Herramienta diseñada por Prof. Elizabeth Izquierdo con asistencia de Claude —
         <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank"
-           class="underline hover:text-slate-300 transition">licencia CC BY-SA</a>
+           class="underline hover:text-slate-300 transition">licencia CC BY-SA 4.0</a>
     </footer>
 
-    <!-- ══════════════════════════════════════════ SCRIPT (dividido en 4 archivos) -->
-    <script src="exercises.js?t=8"></script>  <!-- datos: exercises[], analyzeData[], analyzeConfig[] -->
-    <script src="script.js?t=12"></script>     <!-- UI: vars globales, loadExercise, canvas render -->
-    <script src="diagram.js?t=14"></script>    <!-- diagrama: drawCrispConnectors, checkAnswers, totalidad, PNG -->
-    <script src="analysis.js?t=2"></script>   <!-- análisis: modo eval, panel, clasificación -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- ══════════════════════════════════════════ SCRIPT -->
 
-    <!-- ── Modal de Conceptos E-R ── -->
-    <div id="concepts-modal" class="hidden fixed inset-0 bg-black/70 z-[10000] flex items-center justify-center p-4" onclick="if(event.target===this)closeConcepts()">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto">
-            <div class="flex items-center justify-between p-5 border-b border-slate-800 sticky top-0 bg-slate-900">
-                <h2 class="text-white font-extrabold text-lg">📖 Conceptos E-R</h2>
-                <button onclick="closeConcepts()" class="text-slate-400 hover:text-white text-xl leading-none">✕</button>
-            </div>
-            <div class="p-5 space-y-5">
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-sky-300 font-extrabold text-sm mb-2">Entidad</p>
-                    <p class="text-slate-300 text-xs leading-relaxed">Objeto o concepto del mundo real del que se guarda información. Se representa con un rectángulo. Ej: CLIENTE, PRODUCTO, PELÍCULA.</p>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-emerald-300 font-extrabold text-sm mb-2">Atributo</p>
-                    <p class="text-slate-300 text-xs leading-relaxed">Propiedad o característica de una entidad o relación. Se representa con un óvalo. Ej: nombre, fecha, precio. Los atributos clave se subrayan.</p>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-red-300 font-extrabold text-sm mb-2">Relación</p>
-                    <p class="text-slate-300 text-xs leading-relaxed">Vínculo o asociación entre entidades. Se representa con un rombo. Suele ser un verbo. Ej: compra, realiza, pertenece.</p>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-amber-300 font-extrabold text-sm mb-2">Cardinalidad</p>
-                    <p class="text-slate-300 text-xs leading-relaxed">Indica cuántas instancias de una entidad se relacionan con otra. Se representa con "1" (uno) o "N" (muchos). Ej: 1:N significa "uno a muchos".</p>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-violet-300 font-extrabold text-sm mb-2">Atributo Compuesto</p>
-                    <p class="text-slate-300 text-xs leading-relaxed">Atributo que puede dividirse en partes más pequeñas. Ej: Dirección (Calle, Número, Ciudad). Se anota como Nombre(Componente1, Componente2).</p>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-cyan-300 font-extrabold text-sm mb-2">Atributo Multivaluado</p>
-                    <p class="text-slate-300 text-xs leading-relaxed">Atributo que puede tener múltiples valores para la misma entidad. Se representa con doble borde. Ej: teléfonos, idiomas, actores de una película.</p>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-pink-300 font-extrabold text-sm mb-2">Atributo Derivado</p>
-                    <p class="text-slate-300 text-xs leading-relaxed">Atributo cuyo valor se puede calcular a partir de otros. Se representa con borde punteado. Ej: edad (se calcula de la fecha de nacimiento).</p>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-teal-300 font-extrabold text-sm mb-2">Atributo de Relación</p>
-                    <p class="text-slate-300 text-xs leading-relaxed">Atributo que describe información del vínculo entre entidades, no de las entidades mismas. Se conecta al rombo de relación. Ej: fecha_compra en "cliente compra producto".</p>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4 border border-violet-700/50">
-                    <p class="text-violet-300 font-extrabold text-sm mb-2">⬤ Totalidad (Participación)</p>
-                    <p class="text-slate-300 text-xs leading-relaxed mb-3">Indica si <strong>todas</strong> las instancias de una entidad deben participar en una relación.</p>
-                    <div class="flex flex-col gap-2">
-                        <div class="flex items-start gap-2">
-                            <span class="mt-0.5 flex-shrink-0">
-                                <svg width="14" height="14"><circle cx="7" cy="7" r="6" fill="#1e293b"/></svg>
-                            </span>
-                            <p class="text-xs text-slate-300"><strong class="text-violet-300">S — Participación total:</strong> todas las instancias de esa entidad participan en la relación. El círculo se dibuja sobre la línea. Ej: todo ALUMNO cursa al menos una ASIGNATURA.</p>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <span class="mt-0.5 text-slate-500 text-base leading-none flex-shrink-0">—</span>
-                            <p class="text-xs text-slate-300"><strong class="text-slate-400">N — Participación parcial:</strong> algunas instancias pueden no participar. Sin círculo. Ej: no toda ASIGNATURA es dictada (podría no tener docente asignado).</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- ── Imagen MER de referencia (manejador global) ── -->
+    <script>
+        window.merRefImageUrl = '';
+
+        function handleMerRefImage(evt) {
+            const file = evt.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                window.merRefImageUrl = e.target.result;
+
+                // Mostrar panel en el tab Diseño E-R
+                const panelD = document.getElementById('mer-ref-panel-diagram');
+                const imgD   = document.getElementById('mer-ref-img-diagram');
+                if (panelD && imgD) {
+                    imgD.src = e.target.result;
+                    panelD.classList.remove('hidden');
+                }
+
+                // ── Desbloquear pestaña Pasaje a Tablas ──
+                const tabTables = document.getElementById('tab-tables');
+                if (tabTables) {
+                    tabTables.disabled = false;
+                    tabTables.textContent = '📊 Pasaje a tablas';
+                }
+
+                // Actualizar botón de carga para mostrar estado
+                const uploadBtn = document.getElementById('mer-upload-btn');
+                const uploadTxt = document.getElementById('mer-upload-text');
+                if (uploadBtn) {
+                    uploadBtn.classList.remove('bg-amber-800/40','border-amber-700/40','text-amber-200');
+                    uploadBtn.classList.add('bg-emerald-800/40','border-emerald-700/40','text-emerald-200');
+                }
+                if (uploadTxt) uploadTxt.textContent = '✓ MER cargado — cambiar imagen';
+
+                // Mostrar botón en el tab Pasaje a tablas (si ya está cargado)
+                if (typeof _tabSyncMerButton === 'function') _tabSyncMerButton();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function toggleMerRefPanelDiagram() {
+            const panel = document.getElementById('mer-ref-panel-diagram');
+            if (panel) panel.classList.toggle('hidden');
+        }
+    </script>
 
     <!-- ── Glosario modal ── -->
     <div id="glossary-modal" class="hidden fixed inset-0 bg-black/70 z-[10000] flex items-center justify-center p-4" onclick="if(event.target===this)closeGlossary()">
@@ -450,12 +432,12 @@
                 <!-- Atributo clave -->
                 <div class="bg-slate-800 rounded-xl p-4 flex gap-3">
                     <svg width="56" height="30" class="flex-shrink-0 mt-1"><ellipse cx="28" cy="15" rx="26" ry="12" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/><text x="28" y="19" text-anchor="middle" font-size="10" font-weight="bold" text-decoration="underline" fill="#059669">PK</text></svg>
-                    <div><p class="text-emerald-300 font-extrabold text-sm mb-1">Atributo clave (PK)</p><p class="text-slate-300 text-xs leading-relaxed">Identifica de forma única a cada instancia de una entidad. Se subraya. Ej: ci, id_cliente, isbn.</p></div>
+                    <div><p class="text-emerald-300 font-extrabold text-sm mb-1">Atributo clave (PK)</p><p class="text-slate-300 text-xs leading-relaxed">Identifica de forma única a cada instancia de una entidad. Se subraya. Ej: CI, Id_cliente, Isbn.</p></div>
                 </div>
                 <!-- Atributo multivaluado -->
                 <div class="bg-slate-800 rounded-xl p-4 flex gap-3">
                     <svg width="56" height="30" class="flex-shrink-0 mt-1"><ellipse cx="28" cy="15" rx="26" ry="12" fill="#f0fdf4" stroke="#10b981" stroke-width="3"/><ellipse cx="28" cy="15" rx="20" ry="8" fill="none" stroke="#10b981" stroke-width="1.5"/></svg>
-                    <div><p class="text-emerald-300 font-extrabold text-sm mb-1">Atributo multivaluado</p><p class="text-slate-300 text-xs leading-relaxed">Puede tener varios valores para la misma entidad. Se dibuja con doble borde. Ej: teléfonos, actores.</p></div>
+                    <div><p class="text-emerald-300 font-extrabold text-sm mb-1">Atributo multivaluado</p><p class="text-slate-300 text-xs leading-relaxed">Puede tener varios valores para la misma entidad. Se dibuja con doble borde. Ej: Teléfonos, Actores.</p></div>
                 </div>
                 <!-- Atributo compuesto -->
                 <div class="bg-slate-800 rounded-xl p-4 flex gap-3">
@@ -475,7 +457,7 @@
                         <svg width="4" height="20"><line x1="2" y1="0" x2="2" y2="20" stroke="#10b981" stroke-width="1.5"/></svg>
                         <svg width="44" height="24"><ellipse cx="22" cy="12" rx="20" ry="10" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/></svg>
                     </div>
-                    <div><p class="text-emerald-300 font-extrabold text-sm mb-1">Atributo de relación</p><p class="text-slate-300 text-xs leading-relaxed">Describe información propia del vínculo entre entidades (no de las entidades en sí). Se conecta al rombo. Ej: fecha_entrada, observación en la relación "recibe".</p></div>
+                    <div><p class="text-emerald-300 font-extrabold text-sm mb-1">Atributo de relación</p><p class="text-slate-300 text-xs leading-relaxed">Describe información propia del vínculo entre entidades. Se conecta al rombo. Ej: Fecha_entrada en la relación "recibe".</p></div>
                 </div>
             </div>
         </div>
@@ -488,33 +470,35 @@
                 <div id="tutorial-steps">
                     <!-- Step 1 -->
                     <div class="tutorial-step" data-step="0">
-                        <p class="text-4xl mb-3">👇</p>
-                        <h3 class="text-white font-extrabold text-xl mb-2">¡Bienvenido a DB-Lab!</h3>
-                        <p class="text-slate-300 text-sm leading-relaxed">Dentro del ejercicio podés navegar entre todos los casos con el selector de arriba. Al terminar, validá tus respuestas y guardá el diagrama como imagen.</p>
+                        <p class="text-4xl mb-3">👋</p>
+                        <h3 class="text-white font-extrabold text-xl mb-2">¡Bienvenido a E-R Constructor!</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">Esta herramienta ayuda a practicar el <strong class="text-white">Modelo Entidad-Relación</strong> paso a paso. Tiene 3 etapas que guían desde leer el problema hasta el pasaje a tablas.</p>
                     </div>
                     <!-- Step 2 -->
                     <div class="tutorial-step hidden" data-step="1">
                         <p class="text-4xl mb-3">📋</p>
                         <h3 class="text-white font-extrabold text-xl mb-2">Etapa 1: Analizar</h3>
-                        <p class="text-slate-300 text-sm leading-relaxed mb-3">Leé el enunciado del problema. A la derecha aparecen <strong class="text-amber-300">fichas</strong> con los términos importantes.</p>
-                        <p class="text-slate-300 text-sm leading-relaxed">Hacé clic en cada ficha y decí si es una <strong class="text-blue-300">Entidad</strong>, un <strong class="text-emerald-300">Atributo</strong> o una <strong class="text-red-300">Relación</strong>. Luego presioná <strong class="text-white">Validar clasificación</strong>.</p>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-3">Leer el enunciado del problema. A la derecha aparecen <strong class="text-white">fichas</strong> con los términos importantes.</p>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-3">Hacer clic en cada ficha y clasificarla como <strong class="text-blue-300">Entidad</strong>, <strong class="text-emerald-300">Atributo</strong> o <strong class="text-red-300">Relación</strong>. Luego presionar <strong class="text-white">Validar clasificación</strong>.</p>
+                        <p class="text-slate-300 text-sm leading-relaxed">Se puede consultar el <button onclick="closeTutorial();showGlossary()" class="text-indigo-300 underline hover:text-white">📖 Glosario</button> ante dudas.</p>
                     </div>
                     <!-- Step 3 -->
                     <div class="tutorial-step hidden" data-step="2">
                         <p class="text-4xl mb-3">🔗</p>
                         <h3 class="text-white font-extrabold text-xl mb-2">Etapa 2: Diseño E-R</h3>
                         <p class="text-slate-300 text-sm leading-relaxed mb-3">El diagrama tiene <strong class="text-white">huecos</strong> en blanco. A la izquierda hay un <strong class="text-white">banco de palabras</strong>.</p>
-                        <p class="text-slate-300 text-sm leading-relaxed">Hacé clic en una palabra del banco y después en el hueco donde corresponde. Cuando termines, presioná <strong class="text-white">Corregir Diagrama</strong>.</p>
+                        <p class="text-slate-300 text-sm leading-relaxed">Hacer clic en una palabra del banco y luego en el hueco donde corresponde. Al terminar, presionar <strong class="text-white">Corregir Diagrama</strong>.</p>
+                        <p class="text-slate-300 text-sm leading-relaxed mt-2">También se puede subir una <strong class="text-white">imagen MER</strong> como referencia con el botón "Subir MER de referencia".</p>
                     </div>
                     <!-- Step 4 -->
                     <div class="tutorial-step hidden" data-step="3">
-                        <p class="text-4xl mb-3">💡</p>
-                        <h3 class="text-white font-extrabold text-xl mb-2">Consejos útiles</h3>
+                        <p class="text-4xl mb-3">📊</p>
+                        <h3 class="text-white font-extrabold text-xl mb-2">Etapa 3: Pasaje a Tablas</h3>
                         <ul class="text-slate-300 text-sm leading-relaxed space-y-2">
-                            <li>• Podés consultar el <button onclick="closeTutorial();showGlossary()" class="text-indigo-300 underline hover:text-white">📖 Glosario</button> en cualquier momento.</li>
-                            <li>• Si algo quedó rojo, no te preocupes — podés intentarlo de nuevo.</li>
-                            <li>• Usá el botón <strong class="text-white">Ver pista de diseño</strong> si necesitás ayuda.</li>
-                            <li>• En el botón <strong class="text-white">⊙</strong> del menú podés activar alto contraste.</li>
+                            <li>• Completar las tablas de entidades con el banco de palabras.</li>
+                            <li>• Seleccionar la regla de pasaje para cada relación.</li>
+                            <li>• Escribir las restricciones FK en el esquema final.</li>
+                            <li>• En el botón <strong class="text-white">⊙</strong> del menú se puede activar alto contraste.</li>
                         </ul>
                     </div>
                 </div>
@@ -558,5 +542,14 @@
             </div>
         </div>
     </div>
+
+    <!-- ── Scripts externos (cache bust t=4) ── -->
+    <script src="exercises.js?t=36"></script>
+    <script src="script.js?t=36"></script>
+    <script src="analysis.js?t=36"></script>
+    <script src="diagram.js?t=36"></script>
+    <script src="tablesData.js?t=36"></script>
+    <script src="tables.js?t=36"></script>
+
 </body>
 </html>

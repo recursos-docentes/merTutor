@@ -22,8 +22,9 @@ Cada ejercicio tiene tres etapas accesibles desde los botones superiores:
 ## Modos de uso
 
 ### 📚 Ejercitación (por defecto)
-- El botón "Validar clasificación" se puede usar múltiples veces.
-- Para avanzar al Diseño E-R se requiere al menos **50% correcto** en el análisis.
+- Cada etapa permite **hasta 3 intentos**. Al agotar los intentos, el botón se bloquea y los elementos quedan en solo lectura (fichas del analizador, banco de palabras e inputs del diagrama).
+- El historial de puntajes (Intento 1 / 2 / 3) se muestra en el banner de feedback y se incluye al pie del PNG al guardar.
+- Para avanzar al Diseño E-R se requiere al menos **50% correcto** en el análisis (o haber agotado los 3 intentos).
 
 ### 📝 Evaluación
 Activado por el docente mediante el parámetro `?ex=1` en la URL. **No hay ningún indicador visible** en pantalla.
@@ -48,8 +49,31 @@ er-designer.html?ejercicio=2&ex=1
 - **Tres pasos** para atributos compuestos: identifica el tipo, luego selecciona los componentes.
 - **Entidades:** si el ejercicio solo tiene entidades fuertes, se clasifican directo sin preguntar subtipo.
 - **Estado persistente:** al cambiar al tab de Diseño E-R y volver, la clasificación se mantiene.
-- **Rastreo de progreso:** compara el resultado con el intento anterior (`localStorage`).
+- **Historial de intentos:** muestra el puntaje de cada intento (hasta 3) en el banner y en el PNG exportado.
 - **Ver respuestas:** después de 2 intentos fallidos en modo ejercitación.
+
+## Panel RNE (Restricciones No Estructurales)
+
+Disponible en el tab **Diseño E-R** para todos los ejercicios mediante el checkbox "📋 Activar panel RNE".
+
+- **Activación automática** en ejercicios con `rne: "autorelacion"`, `"generalizacion"` o `"agregacion"`.
+- **Activación manual** (checkbox) para RNE básicas de dominio en cualquier otro ejercicio.
+- El panel muestra una **pista contextual** según el tipo de RNE (auto-relación, categorización, agregación, o restricción básica de dominio).
+- La barra **INSERTAR** permite insertar rápidamente símbolos: `∀ ∈ ∉ ∩ ∪ ∅ → si` y operadores de comparación `> ≥ < ≤ = ≠`.
+- El texto se guarda en `localStorage` con clave `rne_<índice>` y se restaura al volver al tab.
+- Al exportar como **PNG**, el texto RNE se incluye como banda inferior en el diagrama si hay contenido.
+
+### Campo `rne` en `exercises[]`
+
+```js
+rne: "basica"        // restricción de dominio (cualquier ejercicio)
+rne: "autorelacion"  // activa hint de irreflexividad
+rne: "generalizacion"// activa hint de disjunción/cobertura
+rne: "agregacion"    // activa hint de existencia en relación base
+// (omitir el campo → sin RNE predefinida; el checkbox sigue disponible)
+```
+
+Si `rne` se omite, la lógica infiere el tipo a partir del campo `concept` para los tres conceptos estructurales; en cualquier otro caso usa `"basica"`.
 
 ---
 
@@ -57,10 +81,11 @@ er-designer.html?ejercicio=2&ex=1
 
 | Función | Descripción |
 |---------|-------------|
-| 📖 **Conceptos E-R** | Modal con teoría sobre entidades, atributos, relaciones, cardinalidad, totalidad y más. |
+| 📖 **Conceptos E-R** | Modal con teoría en formato **acordeón** (clic para expandir). 6 ítems de primer nivel: Entidad, Atributo, Relación, Cardinalidad, Totalidad, RNE. Entidad y Atributo se subdividen en sub-ítems (fuerte/débil; simple-clave/compuesto/multivaluado/derivado/de relación). Cada sub-ítem incluye mini SVG de la representación gráfica y ejemplos contextualizados. |
+| 📋 **Panel RNE** | En el tab Diseño E-R, todos los ejercicios muestran un checkbox "Activar panel RNE" para escribir restricciones no estructurales. Los ejercicios con RNE estructural (autorelación, categorización, agregación) lo activan automáticamente. El texto persiste en `localStorage` y se incluye como banda inferior en el PNG exportado. |
 | 📚 **Glosario** | Modal con formas SVG y definición de cada concepto E-R. |
 | ? **Tutorial** | Modal de 4 pasos automático en el primer uso, reabrble con `?`. |
-| 💡 **Ver respuestas** | Aparece tras 2 intentos fallidos en modo ejercitación. |
+| 💡 **Ver respuestas** | Botón en el **tab Analizar el problema**: aparece en el feedback tras 2 intentos fallidos en modo ejercitación. Muestra la clasificación correcta de cada término (en violeta) directamente sobre las fichas del panel. Solo disponible en modo ejercitación, nunca en evaluación. |
 | ⬆️ **Comparación de intentos** | Muestra si mejoró, empeoró o se mantuvo respecto al intento anterior. |
 
 ---
@@ -88,16 +113,20 @@ merTutor-main/
 
 | Índice | Caso | Concepto | Estado |
 |--------|------|---------|--------|
-| 0 | 🔧 Taller Mecánico | Atributos especiales (relación) | ✅ |
-| 1 | 📚 Biblioteca Escolar | Atributos especiales (relación) | ✅ |
-| 2 | 🛒 Tienda Online | Relaciones simples | ✅ |
-| 3 | 🌐 Red Social | Generalización/ISA | ✅ |
-| 4 | Plataforma Streaming | Atributos especiales | ✅ |
-| 5 | 🏥 Sistema Hospitalario | Relaciones simples | ✅ |
-| 6 | Institución educativa | Atributos especiales | ✅ |
-| 7 | Colegio | Totalidad / Participación | ✅ |
-| 8 | Película | Entidad débil | ✅ |
-| 9 | Fútbol | Autorelación | ✅ |
+| 0 | 🔧 Taller Mecánico | Atributos especiales (atributo de relación, N:N) | ✅ |
+| 1 | 📚 Biblioteca Escolar | Atributos especiales (atributo de relación, N:N) | ✅ |
+| 2 | 🛒 Tienda Online | Relaciones simples (1:N) | ✅ |
+| 3 | 🌐 Red Social | Generalización / ISA | ✅ |
+| 4 | 📺 Plataforma de Streaming | Atributos especiales (compuesto, multivaluado) | ✅ |
+| 5 | 🏥 Sistema Hospitalario | Relaciones simples (1:N) | ✅ |
+| 6 | 🏫 Institución educativa | Atributos especiales (compuesto, derivado, N:N) | ✅ |
+| 7 | 🏫 Colegio | Totalidad / Participación | ✅ |
+| 8 | 🎬 Película | Entidad débil | ✅ |
+| 9 | ⚽ Fútbol | Autorelación | ✅ |
+| 10 | 🎵 Música | Relaciones simples (N:N, N:1) | ✅ |
+| 11 | 📖 Biblioteca2 | Entidad débil | ✅ |
+| 12 | 🔩 Almacén de Piezas | Autorelación + entidad débil | ✅ |
+| 13 | 🏫 Instituto | Agregación | ✅ |
 
 ---
 
@@ -106,6 +135,12 @@ merTutor-main/
 ### Método rápido: Asistente visual
 
 Abrir `add-exercise-wizard.html` en el navegador. Genera automáticamente el código para los 4 bloques que hay que pegar.
+
+**Cómo insertar el emoji del título:**
+1. Hacer clic en el campo "Título" del asistente
+2. Presionar **Win + .** (tecla Windows + punto)
+3. Buscar por palabra (ej: "music", "hospital", "school")
+4. Hacer clic en el emoji → se inserta donde está el cursor
 
 Para autorelación, la sintaxis en el campo de relaciones es:
 ```
@@ -253,17 +288,15 @@ Secciones activas en `index.html`:
 | `autorelacion` | Autorelación |
 | `generalizacion` | Generalización/Categorización (ISA) |
 | `entidad_debil` | Entidades débiles |
+| `agregacion` | Agregación |
 
 ---
 
 ## Tecnologías
 
-- **Tailwind CSS** (CDN) — estilos
-- **html2canvas 1.4.1** (CDN) — exportación PNG
-- JavaScript vanilla — sin frameworks ni dependencias de build
+- **HTML + JavaScript vanilla** — sin frameworks ni bundlers
+- **Tailwind CSS** vía CDN
+- **html2canvas** — exportación del diagrama como PNG
+- **GitHub Pages** — despliegue directo de archivos estáticos
 
----
-
-## Licencia
-
-[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) — Podés usar, adaptar y redistribuir con atribución y bajo la misma licencia.
+No requiere instalación ni build. Para desplegar: subir los archivos al repositorio y activar GitHub Pages desde la rama `main`.

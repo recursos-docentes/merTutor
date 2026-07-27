@@ -218,17 +218,27 @@
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700 mb-2">📚 Concepto E-R</label>
                                 <p class="text-xs text-slate-600 mb-2">Selecciona qué concepto enseña este ejercicio</p>
-                                <select id="concept-select" class="input-field" style="width: 100%; background-color: #fef3c7; border: 2px solid #f59e0b;">
+                                <select id="concept-select" class="input-field" onchange="onConceptChange()" style="width: 100%; background-color: #fef3c7; border: 2px solid #f59e0b;">
                                     <option value="">-- Seleccionar concepto --</option>
                                     <option value="relaciones_simples">Relaciones simples (1:N)</option>
                                     <option value="atributos_especiales">Atributos especiales / Relaciones N:N</option>
                                     <option value="participacion">Totalidad / Participación</option>
                                     <option value="generalizacion">Generalización / ISA</option>
                                     <option value="autorelacion">Autorelación</option>
-                                    <option value="entidad_debil">Entidades débiles 🔒</option>
+                                    <option value="entidad_debil">Entidades débiles</option>
                                     <option value="agregacion">Agregación 🔒</option>
                                 </select>
-                                <p class="text-xs text-slate-500 mt-1">Los conceptos con 🔒 aparecen como "pendiente" en el inicio hasta que se agregue su sección.</p>
+                                <p class="text-xs text-slate-500 mt-1">Los conceptos con 🔒 aún no tienen sección en el inicio.</p>
+                            </div>
+
+                            <!-- RNE -->
+                            <div class="p-3 bg-cyan-50 border border-cyan-200 rounded-lg">
+                                <label class="flex items-center gap-2 cursor-pointer mb-1">
+                                    <input type="checkbox" id="hasRne" onchange="updatePreview()">
+                                    <span class="text-sm font-semibold text-slate-700">📋 ¿Tiene RNE?</span>
+                                    <span class="text-xs text-slate-500">(Restricciones No Estructurales)</span>
+                                </label>
+                                <p id="rne-wizard-hint" class="text-xs text-cyan-700 hidden"></p>
                             </div>
 
                             <div class="flex gap-2">
@@ -294,6 +304,14 @@
         let currentStep = 1;
         let entitiesData = {};
         let relationsData = [];
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
 
         function nextStep(from) {
             if (from === 1) {
@@ -993,6 +1011,31 @@
             });
         }
 
+        function onConceptChange() {
+            const concept = document.getElementById('concept-select').value;
+            const structural = ['autorelacion', 'generalizacion', 'agregacion'];
+            const hintEl = document.getElementById('rne-wizard-hint');
+            const cb = document.getElementById('hasRne');
+            if (structural.includes(concept)) {
+                // auto-sugerir RNE para conceptos estructurales
+                if (cb && !cb.checked) cb.checked = true;
+                if (hintEl) {
+                    hintEl.textContent = '💡 Este concepto suele requerir RNE estructural. Se generará rne: "' + concept + '".';
+                    hintEl.classList.remove('hidden');
+                }
+            } else {
+                if (hintEl) {
+                    if (cb && cb.checked) {
+                        hintEl.textContent = '💡 Se generará rne: "basica" (restricción de dominio/atributo).';
+                        hintEl.classList.remove('hidden');
+                    } else {
+                        hintEl.classList.add('hidden');
+                    }
+                }
+            }
+            updatePreview();
+        }
+
         function generateCode() {
             const emoji = document.getElementById('emoji').value.trim() || '🏫';
             const title = `${emoji} ${document.getElementById('title').value.trim()}`;
@@ -1005,6 +1048,9 @@
             const concept = document.getElementById('concept-select').value;
             const requireSubtypes = document.getElementById('requireSubtypes').checked;
             const enabled = document.getElementById('enabledCheck')?.checked ?? true;
+            const hasRne = document.getElementById('hasRne')?.checked ?? false;
+            const structuralRne = ['autorelacion', 'generalizacion', 'agregacion'];
+            const rneValue = hasRne ? (structuralRne.includes(concept) ? concept : 'basica') : null;
 
             if (!concept) {
                 alert('⚠️ Por favor selecciona un concepto E-R antes de continuar.');
@@ -1078,6 +1124,7 @@ ${escapeHtml(exerciseCode)}
     <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
         <p class="text-sm font-semibold text-amber-900 mb-2">📊 2. Análisis de Términos</p>
         <p class="text-xs text-amber-800 mb-2">Pegar al final de <code class="bg-white px-2 py-1 rounded">analyzeData = [...]</code>, antes del cierre <code>]</code> y separado por coma.</p>
+        <p class="text-xs text-amber-700 mb-2">ℹ️ El texto descriptivo del tab Analizar se toma automáticamente del campo <code class="bg-white px-1 rounded">description</code> del ejercicio. Solo se necesitan los chips (entidades, atributos, relaciones).</p>
         <div class="code-block text-xs">
 ${escapeHtml(analyzeDataCode)}
         </div>
@@ -1093,18 +1140,14 @@ ${escapeHtml(configCode)}
         <button class="btn-primary text-sm mt-2 copy-btn" data-text="${encodeURIComponent(configCode)}">📋 Copiar</button>
     </div>
 
-    <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-        <p class="text-sm font-semibold text-green-900 mb-2">🔽 4. Selector en er-designer.html</p>
-        <p class="text-xs text-green-800 mb-2">Agregar en los dos <code class="bg-white px-2 py-1 rounded">&lt;select&gt;</code> de <strong>er-designer.html</strong> (reemplazar N con el índice real).</p>
-        <div class="code-block text-xs">
-${escapeHtml(htmlOptionCode)}
-        </div>
-        <button class="btn-primary text-sm mt-2 copy-btn" data-text="${encodeURIComponent(htmlOptionCode)}">📋 Copiar</button>
+    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+        <p class="text-sm font-semibold text-emerald-900 mb-2">✅ 4. Selector en er-designer.html — automático</p>
+        <p class="text-xs text-emerald-800">El selector se genera dinámicamente desde el array <code class="bg-white px-1 rounded">exercises[]</code>. No es necesario editar el HTML.</p>
     </div>
 
-    <div class="p-4 bg-slate-50 border border-slate-300 rounded-lg">
-        <p class="text-sm font-semibold text-slate-800 mb-2">🏠 5. Página de inicio (index.html)</p>
-        <p class="text-xs text-slate-700">${indexInfo}</p>
+    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+        <p class="text-sm font-semibold text-emerald-900 mb-2">✅ 5. Página de inicio (index.html) — automático</p>
+        <p class="text-xs text-emerald-800">${indexInfo}</p>
     </div>
 </div>
             `;
@@ -1228,10 +1271,10 @@ ${escapeHtml(htmlOptionCode)}
                 const relX = (ent1Pos.x + ent2Pos.x) / 2;
                 const relId = `r_${idx}`;
 
-                // Detectar si cualquiera de las entidades es débil (relación doble)
+                // Relación doble solo si el usuario marcó ^ en el nombre
                 const ent1Data = entitiesData[rel.ent1];
                 const ent2Data = entitiesData[rel.ent2];
-                const isDoubleRelation = ent1Data.isWeak || ent2Data.isWeak;
+                const isDoubleRelation = rel.isDoubleRelation;
 
                 // ── Autorelación: posición y código especial ──────────────────────────
                 if (rel.isAutoRelation) {
@@ -1283,8 +1326,8 @@ ${escapeHtml(htmlOptionCode)}
                 const cardX1 = (ent1Pos.x + relX) / 2;  // Entre ent1 y relación
                 const cardXn = (relX + ent2Pos.x) / 2;  // Entre relación y ent2
 
-                nodes.push(`        { id: "${card1}", type: "cardinality", correctValue: "1", x: ${Math.round(cardX1 * 10) / 10}, y: 50, w: 30, h: 30 }`);
-                nodes.push(`        { id: "${cardN}", type: "cardinality", correctValue: "N", x: ${Math.round(cardXn * 10) / 10}, y: 50, w: 30, h: 30 }`);
+                nodes.push(`        { id: "${card1}", type: "cardinality", correctValue: "${rel.card1||'N'}", x: ${Math.round(cardX1 * 10) / 10}, y: 50, w: 30, h: 30 }`);
+                nodes.push(`        { id: "${cardN}", type: "cardinality", correctValue: "${rel.card2||'N'}", x: ${Math.round(cardXn * 10) / 10}, y: 50, w: 30, h: 30 }`);
 
                 connections.push(`        { from: "${cardN}", to: "${relId}" }`);
                 connections.push(`        { from: "${card1}", to: "${relId}" }`);
@@ -1314,8 +1357,16 @@ ${escapeHtml(htmlOptionCode)}
                 });
             });
 
-            // Convertir saltos de línea a <br> para HTML
-            const descriptionHTML = description.replace(/\n/g, '<br>');
+            // Convertir saltos de línea a <br> y envolver nombres de entidades en <strong>
+            function escapeRx(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+            const entityNames = Object.keys(entitiesData);
+            entityNames.sort((a, b) => b.length - a.length);
+            let descriptionHTML = description.replace(/\n/g, '<br>');
+            entityNames.forEach(term => {
+                if (!term) return;
+                const rx = new RegExp('(?<![\\w<])' + escapeRx(term) + '(?![\\w>])', 'gi');
+                descriptionHTML = descriptionHTML.replace(rx, `<strong>${term.toLowerCase()}</strong>`);
+            });
 
             let code = `{
     title: "${title}",
@@ -1329,7 +1380,7 @@ ${nodes.join(',\n')}
 ${connections.join(',\n')}
     ],
     // METADATOS
-    concept: "${concept}",
+    concept: "${concept}",${rneValue ? `\n    rne: "${rneValue}",` : ''}
     availableFor: ["class", "home", "eval"],
     enabled: ${enabled}
 }`;
@@ -1339,16 +1390,16 @@ ${connections.join(',\n')}
         function generateAnalyzeDataCode(description) {
             let segments = [];
             const lines = description.split('\n');
-            const firstLine = lines[0];
 
             // Escapar strings correctamente
             const escapeString = (str) => str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 
-            // Primera línea
-            segments.push(`"${escapeString(firstLine)}\\n\\n"`);
+            // Nota: el texto introductorio ya NO se incluye aquí.
+            // El tab Analizar muestra exercises[i].description directamente.
+            // Solo se generan los chips (entidades, atributos, relaciones).
 
-            // Procesar líneas restantes (saltar líneas vacías)
-            const dataLines = lines.slice(1).filter(line => line.trim());
+            // Procesar todas las líneas (saltar líneas vacías y la intro)
+            const dataLines = lines.filter(line => line.trim() && line.trim().startsWith('•'));
 
             dataLines.forEach((line) => {
                 // Dividir línea en partes según patrones
@@ -1373,7 +1424,7 @@ ${connections.join(',\n')}
                             if (idx > 0) segments.push('", "');
                             segments.push(`{word:"${escapeString(attr)}",type:"atributo",attrType:"simple"}`);
                         });
-                        segments.push('".\n"');
+                        segments.push('".\\n"');
                     }
                 } else if (line.includes('puede ')) {
                     // Es una línea de relación — extraer el verbo relación como token
@@ -1390,18 +1441,18 @@ ${connections.join(',\n')}
                         segments.push(`"${escapeString(after)}\\n"`);
                     } else {
                         segments.push(`"${escapeString(line)}\\n"`);
-                    }
+                                    }
                 } else {
-                    segments.push(`"${escapeString(line)}\\n"`);
+                    // Línea genérica
+                    segments.push(`"${escapeString(line.trim())}\\n"`);
                 }
             });
-
-            return `[\n    ${segments.join(',\n    ')}\n]`;
+            return `[\n        ${segments.join(',\n        ')}\n    ]`;
         }
 
-        function escapeHtml(str) {
-            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        }
+ 
+
     </script>
+
 </body>
 </html>

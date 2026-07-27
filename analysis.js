@@ -17,7 +17,40 @@ function setStage(stage) {
         if (tab && !tab.disabled) tab.classList.toggle('active', s === stage);
     });
     hidePopup();
-    if (stage === 'diagram') requestAnimationFrame(drawCrispConnectors);
+    if (stage === 'tables') {
+        if (typeof renderTablesPanel === 'function') renderTablesPanel(activeExercise);
+    }
+    if (stage === 'diagram') {
+        requestAnimationFrame(drawCrispConnectors);
+        // Mostrar avisos si el ejercicio los tiene
+        const wrapper = document.getElementById('notices-wrapper');
+        const panel   = document.getElementById('notices-panel');
+        const content = document.getElementById('notices-content');
+        if (wrapper && content && content.children.length > 0) {
+            wrapper.classList.remove('hidden');
+            // Abrir el panel y programar auto-cierre
+            if (panel) {
+                panel.classList.remove('hidden');
+                if (_noticesTimeout) clearTimeout(_noticesTimeout);
+                _noticesTimeout = setTimeout(() => panel.classList.add('hidden'), 7000);
+            }
+        }
+        // Restaurar toggle y panel RNE al volver al tab de diseño
+        if (typeof renderRNEPanel === 'function' && exercises && exercises[activeExercise]) {
+            renderRNEPanel(exercises[activeExercise]);
+        }
+    } else {
+        // En otras etapas, ocultar el wrapper, el panel de avisos y el toggle RNE
+        const wrapper = document.getElementById('notices-wrapper');
+        const panel   = document.getElementById('notices-panel');
+        if (wrapper) wrapper.classList.add('hidden');
+        if (panel)   panel.classList.add('hidden');
+        if (_noticesTimeout) { clearTimeout(_noticesTimeout); _noticesTimeout = null; }
+        const rneToggleRow = document.getElementById('rne-toggle-row');
+        const rnePanel     = document.getElementById('rne-panel');
+        if (rneToggleRow) rneToggleRow.classList.add('hidden');
+        if (rnePanel)     rnePanel.classList.add('hidden');
+    }
 }
 // ── Render analysis panel ─────────────────────────────
 function renderAnalysisPanel(exerciseIndex) {
@@ -53,9 +86,7 @@ function renderAnalysisPanel(exerciseIndex) {
         updateClassificationPanels();
         return;
     }
-    segments.forEach(seg => {
-        textContainer.appendChild(document.createTextNode(typeof seg === 'string' ? seg : seg.word));
-    });
+    textContainer.innerHTML = (exercises[exerciseIndex]?.description || '').replace(/\n\s*/g, '');
     // Fichas en el panel lateral
     const pool = document.getElementById('terms-pool');
     pool.innerHTML = '';
@@ -353,30 +384,74 @@ function validateAnalysis() {
     fb.classList.add(...(hits === total
         ? ['bg-emerald-950','text-emerald-300','border-emerald-700']
         : ['bg-amber-950','text-amber-300','border-amber-700']));
-    fb.innerHTML = `<span class="text-sm">${msg}</span>`;
-    // Rastrear intentos y comparar progreso
+    // Rastrear intentos
     analysisAttempts++;
-    _saveScore(activeExercise, hits, total);
-    const prev = _getPrevScore(activeExercise);
-    if (prev && !evalMode) {
-        const diff = hits - prev.hits;
-        const arrow = diff > 0 ? `⬆️ +${diff} respuestas más que la vez anterior` : diff < 0 ? `⬇️ ${Math.abs(diff)} menos que la vez anterior` : '↔️ Igual que la vez anterior';
-        fb.innerHTML += `<div class="mt-2 text-xs font-semibold text-slate-300">${arrow}</div>`;
-    }
-    // Mostrar "Ver respuestas" después de 2 intentos fallidos
-    if (!evalMode && analysisAttempts >= 2 && hits < total) {
-    const goBtn = document.getElementById('btn-go-diagram');
-    const vbtn  = document.getElementById('btn-validate-analysis');
-    const tabDiagram = document.getElementById('tab-diagram');
-    if (evalMode) {
-        vbtn.disabled = true;
-        vbtn.className = 'py-3.5 bg-slate-700/50 text-slate-400 font-bold rounded-2xl text-sm flex items-center justify-center gap-2 cursor-not-allowed border border-slate-700';
-        vbtn.textContent = '✓ Clasificación registrada';
-        goBtn.disabled = true;
-        goBtn.className = 'py-3 bg-sky-600/50 text-sky-300 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 transition border border-sky-600 cursor-not-allowed';
+    if (!evalMode) {
+        analysisAttemptScores.push({ hits, total, pct });
+        const histHtml = analysisAttemptScores
+            .map((s, i) => `<span class="font-bold">Intento ${i+1}:</span> ${s.hits}/${s.total} (${s.pct}%)`)
+            .join(' &nbsp;|&nbsp; ');
+        fb.innerHTML = `<span class="text-sm">${msg}</span><div class="mt-1.5 text-xs text-slate-300">${histHtml}</div>`;
+        if (analysisAttemptScores.length >= 3) {
+            const vbtn = document.getElementById('btn-validate-analysis');
+            if (vbtn) {
+                vbtn.disabled = true;
+                vbtn.className = 'py-3.5 bg-slate-700/50 text-slate-400 font-bold rounded-2xl text-sm flex items-center justify-center gap-2 cursor-not-allowed border border-slate-700';
+                vbtn.textContent = '✓ Máximo 3 intentos';
+            }
+            // Congelar chips del analizador
+            document.querySelectorAll('#terms-pool .term-chip').forEach(chip => {
+                chip.style.pointerEvents = 'none';
+                chip.classList.add('opacity-60');
+            });
+        }
+        // Mostrar botón "Ver respuestas" + "Siguiente" después de 2 intentos fallidos
+        if (!evalMode && analysisAttempts >= 2 && hits < total) {
+            fb.innerHTML += `<button onclick="_revealCorrectAnswers()" class="mt-2 w-full py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold rounded-xl text-xs transition">💡 Ver respuestas correctas</button>`;
+            const goBtn = document.getElementById('btn-go-diagram');
+            if (goBtn) { goBtn.textContent = '✓ Siguiente: Diseño E-R'; goBtn.classList.remove('hidden'); }
+        }
     } else {
-        goBtn.textContent = '✓ Siguiente: Diseño E-R';
-        goBtn.classList.remove('hidden');
+        // modo evaluación
+        fb.innerHTML = `<span class="text-sm">${msg}</span>`;
+        const vbtn = document.getElementById('btn-validate-analysis');
+        const goBtn = document.getElementById('btn-go-diagram');
+        if (vbtn) {
+            vbtn.disabled = true;
+            vbtn.className = 'py-3.5 bg-slate-700/50 text-slate-400 font-bold rounded-2xl text-sm flex items-center justify-center gap-2 cursor-not-allowed border border-slate-700';
+            vbtn.textContent = '✓ Clasificación registrada';
+        }
+        if (goBtn) {
+            goBtn.disabled = true;
+            goBtn.className = 'py-3 bg-sky-600/50 text-sky-300 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 transition border border-sky-600 cursor-not-allowed';
+        }
     }
 }
+
+// ── Revelar respuestas correctas ──────────────────────────────────────────────
+function _revealCorrectAnswers() {
+    const segments   = analyzeData[activeExercise] || [];
+    const componentWords = _getComponentWords();
+    segments.forEach((seg, idx) => {
+        if (typeof seg === 'string') return;
+        if (componentWords.has(seg.word)) return;
+        const chip = document.querySelector(`#terms-pool [data-word-idx="${idx}"]`);
+        if (!chip) return;
+        const word  = chip.dataset.word || seg.word;
+        const label = seg.type === 'entidad'
+            ? (seg.entityType || 'entidad')
+            : seg.type === 'atributo'
+                ? (analyzeConfig[activeExercise]?.requireSubtypes ? (seg.attrType || 'atributo') : 'atributo')
+                : 'relación';
+        chip.className = 'term-chip px-2.5 py-1 rounded-lg text-xs font-bold border-2 border-indigo-400 bg-indigo-500/20 text-indigo-200 flex flex-col items-center leading-tight';
+        chip.innerHTML = `${word}<span class="text-[9px] font-extrabold text-indigo-300/80 uppercase tracking-wide">${label}</span>`;
+    });
+    // Deshabilitar el botón tras usarlo
+    document.querySelectorAll('#analyze-feedback button').forEach(btn => {
+        if (btn.textContent.includes('Ver respuestas')) {
+            btn.disabled = true;
+            btn.textContent = '✓ Respuestas reveladas';
+            btn.className = btn.className.replace('hover:bg-slate-600', '') + ' opacity-60 cursor-not-allowed';
+        }
+    });
 }

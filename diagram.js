@@ -191,17 +191,22 @@ function drawCrispConnectors() {
             if (!relEl) return;
             const rel = center(relEl);
 
-            // Encontrar la entidad conectada más cercana al nodo de totalidad
-            let entityEl = null;
-            let minDist  = Infinity;
-            cur.connections.forEach(conn => {
-                const otherId = conn.from === relId ? conn.to : (conn.to === relId ? conn.from : null);
-                if (!otherId) return;
-                const otherNode = cur.nodes.find(nd => nd.id === otherId);
-                if (otherNode?.type !== 'entity') return;
-                const dist = Math.hypot(otherNode.x - n.x, otherNode.y - n.y);
-                if (dist < minDist) { minDist = dist; entityEl = document.getElementById(otherId); }
-            });
+            // Encontrar la entidad correspondiente al lado (left/right) de este nodo de totalidad,
+            // usando la misma convención que renderTotalidadPanel: "left" = entidad → relación,
+            // "right" = relación → entidad. (Antes se usaba la entidad más cercana en distancia,
+            // lo cual se rompía si se reposicionaban los nodos del diagrama.)
+            const isLeftSide = match[2] === 'left';
+            let entityId = null;
+            if (isLeftSide) {
+                const conn = cur.connections.find(c => c.to === relId &&
+                    ['entity','aggregation'].includes(cur.nodes.find(nd => nd.id === c.from)?.type));
+                entityId = conn?.from;
+            } else {
+                const conn = cur.connections.find(c => c.from === relId &&
+                    ['entity','aggregation'].includes(cur.nodes.find(nd => nd.id === c.to)?.type));
+                entityId = conn?.to;
+            }
+            const entityEl = entityId ? document.getElementById(entityId) : null;
             if (!entityEl) return;
 
             const entity = center(entityEl);
@@ -241,8 +246,7 @@ function resetExercise() {
         // Limpiar userValue de totalidad
         if (n.type === 'totalidad') { n.userValue = undefined; }
     });
-    _totalidadCorrectMap = null; // limpiar mapa para que drawCrispConnectors no redibuje
-    // Eliminar círculos de totalidad del SVG
+    _totalidadCorrectMap = null;
     document.querySelectorAll('.totalidad-circle').forEach(c => c.remove());
     document.getElementById('feedback-alert').classList.add('hidden');
     const gb = document.getElementById('grade-box');
@@ -252,6 +256,16 @@ function resetExercise() {
     document.querySelectorAll('.totalidad-btn').forEach(btn => {
         btn.className = 'totalidad-btn px-3 py-1 text-xs font-bold bg-slate-700 border border-slate-600 rounded';
     });
+    // Resetear contadores de intentos del diagrama
+    diagramAttemptScores = [];
+    // Limpiar palabra seleccionada
+    highlightedWord = null;
+    const ss = document.getElementById('selection-status');
+    if (ss) ss.innerText = "";
+    document.querySelectorAll('#word-bank .word-tag').forEach(b => b.classList.remove('ring-2','ring-yellow-400','bg-yellow-900/40'));
+    // Re-habilitar botón Corregir y actualizar banco de palabras
+    if (typeof _resetCorregirBtn === 'function') _resetCorregirBtn();
+    if (typeof updateWordBankVisuals === 'function') updateWordBankVisuals();
 }
 // ── Siguiente ejercicio ──────────────────────────────────
 function nextExercise() {
@@ -317,12 +331,37 @@ function renderTotalidadPanel(exercise) {
         const rel = exercise.nodes.find(n => n.type === 'relation' && n.id === `r_${relIndex}`);
         if (!rel) return;
 
+        // Buscar entidades conectadas: left = entidad → relación, right = relación → entidad
+        const leftConn   = exercise.connections.find(c => c.to === rel.id &&
+            exercise.nodes.find(n => n.id === c.from)?.type === 'entity');
+        const rightConn  = exercise.connections.find(c => c.from === rel.id &&
+            exercise.nodes.find(n => n.id === c.to)?.type === 'entity');
+        const leftEntity  = leftConn  ? exercise.nodes.find(n => n.id === leftConn.from)  : null;
+        const rightEntity = rightConn ? exercise.nodes.find(n => n.id === rightConn.to)   : null;
+
+        // Para relaciones horizontales, ordenar por x para que coincida con el diagrama
+        const dx = Math.abs((leftEntity?.x ?? 0) - (rightEntity?.x ?? 0));
+        const dy = Math.abs((leftEntity?.y ?? 0) - (rightEntity?.y ?? 0));
+        const isHorizontal = dx > dy;
+        const needsSwap = isHorizontal && leftEntity && rightEntity && leftEntity.x > rightEntity.x;
+
+        const labelA = needsSwap ? rightEntity?.correctValue : leftEntity?.correctValue;
+        const labelB = needsSwap ? leftEntity?.correctValue  : rightEntity?.correctValue;
+        const nodeA  = needsSwap ? sides.right : sides.left;
+        const nodeB  = needsSwap ? sides.left  : sides.right;
+
         const row = document.createElement('div');
         row.className = 'flex items-center justify-center gap-3 bg-slate-800/50 px-4 py-2.5 rounded-lg border border-violet-700/40';
         row.innerHTML = `
-            ${btnGroup(sides.left)}
+            <div class="flex flex-col items-center gap-1">
+                <span class="text-[10px] text-slate-400 font-semibold">${labelA ?? ''}</span>
+                ${btnGroup(nodeA)}
+            </div>
             <span class="text-sm font-bold text-violet-300 whitespace-nowrap">◆ ${rel.correctValue} ◆</span>
-            ${btnGroup(sides.right)}
+            <div class="flex flex-col items-center gap-1">
+                <span class="text-[10px] text-slate-400 font-semibold">${labelB ?? ''}</span>
+                ${btnGroup(nodeB)}
+            </div>
         `;
         questions.appendChild(row);
     });
@@ -490,7 +529,43 @@ function checkAnswers() {
             ? ['bg-emerald-950','text-emerald-300','border-emerald-700']
             : ['bg-amber-950',  'text-amber-300', 'border-amber-700'])
     );
-    fb.innerHTML = `<span class="text-sm">${msg}</span>`;
+    // Desbloquear pestaña Pasaje a Tablas si puntaje ≥ 50% (independiente del modo evaluación)
+    if (pct >= 50) {
+        const tabTables = document.getElementById('tab-tables');
+        if (tabTables && tabTables.disabled) {
+            tabTables.disabled = false;
+            tabTables.onclick  = () => setStage('tables');
+            tabTables.textContent = tabTables.textContent.replace(' 🔒', '');
+        }
+    }
+    // Registrar intento
+    if (!evalMode) {
+        diagramAttemptScores.push({ hits, total, grade });
+        const histHtml = diagramAttemptScores
+            .map((s, i) => `<span class="font-bold">Intento ${i+1}:</span> ${s.grade}/10`)
+            .join(' &nbsp;|&nbsp; ');
+        fb.innerHTML = `<span class="text-sm">${msg}</span><div class="mt-1.5 text-xs text-slate-300">${histHtml}</div>`;
+        if (diagramAttemptScores.length >= 3) {
+            const btn = document.querySelector('button[onclick="checkAnswers()"]');
+            if (btn) {
+                btn.disabled = true;
+                btn.className = 'w-full py-3.5 bg-slate-700/50 text-slate-400 font-bold rounded-2xl text-sm flex items-center justify-center gap-2 cursor-not-allowed border border-slate-700';
+                btn.textContent = '✓ Máximo 3 intentos';
+            }
+            // Congelar banco de palabras restantes
+            document.querySelectorAll('#word-bank button').forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-40', 'cursor-not-allowed');
+                b.onclick = null;
+            });
+            // Deshabilitar inputs del canvas
+            document.querySelectorAll('#diagram-nodes input').forEach(inp => {
+                inp.disabled = true;
+            });
+        }
+    } else {
+        fb.innerHTML = `<span class="text-sm">${msg}</span>`;
+    }
     requestAnimationFrame(drawCrispConnectors);
     if (evalMode) {
         const btn = document.querySelector('button[onclick="checkAnswers()"]');
@@ -662,6 +737,11 @@ async function saveAsPNG() {
             ctx.textAlign='center'; ctx.textBaseline='middle';
             ctx.fillText('ISA',c.x,c.y+6);
             ctx.restore(); return;
+        } else if (n.type==='aggregation') {
+            ctx.strokeStyle='#94a3b8'; ctx.lineWidth=2;
+            ctx.beginPath(); ctx.rect(c.l,c.t,c.w,c.h);
+            ctx.stroke();
+            ctx.restore(); return;
         }
 
         // Texto
@@ -711,7 +791,7 @@ async function saveAsPNG() {
                               : conn.to   === 'r_'+match[1] ? conn.from : null;
                 if (!otherId) return;
                 const otherNode = cur.nodes.find(nd => nd.id === otherId);
-                if (otherNode?.type !== 'entity') return;
+                if (!['entity','aggregation'].includes(otherNode?.type)) return;
                 const dist = Math.hypot(otherNode.x - n.x, otherNode.y - n.y);
                 if (dist < minDist) { minDist = dist; entityEl = document.getElementById(otherId); }
             });
@@ -732,6 +812,90 @@ async function saveAsPNG() {
             ctx.restore();
         }
     });
+
+    // ── Historial de intentos (banda inferior) ────────────
+    const hasHistory = (diagramAttemptScores.length > 0) || (analysisAttemptScores.length > 0);
+    if (hasHistory && !evalMode) {
+        const bandH = 28;
+        // Ampliar canvas
+        const oldData = ctx.getImageData(0, 0, W*SCALE, H*SCALE);
+        off.height = (H + bandH) * SCALE;
+        ctx.putImageData(oldData, 0, 0);
+        ctx.scale(SCALE, SCALE);  // redimensionar resetea el transform — re-aplicar
+        // Fondo de la banda
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(0, H, W, bandH);
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(W, H); ctx.stroke();
+        // Texto
+        ctx.font = 'bold 9px "Plus Jakarta Sans",sans-serif';
+        ctx.textBaseline = 'middle';
+        const y = H + bandH / 2;
+        let x = 12;
+        if (diagramAttemptScores.length > 0) {
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('Diseño E-R:', x, y);
+            x += ctx.measureText('Diseño E-R:').width + 6;
+            diagramAttemptScores.forEach((s, i) => {
+                if (i > 0) { ctx.fillStyle = '#475569'; ctx.fillText('|', x, y); x += ctx.measureText('|').width + 6; }
+                ctx.fillStyle = s.grade >= 6 ? '#34d399' : '#f87171';
+                ctx.fillText(`Int.${i+1}: ${s.grade}/10`, x, y);
+                x += ctx.measureText(`Int.${i+1}: ${s.grade}/10`).width + 8;
+            });
+            x += 10;
+        }
+        if (analysisAttemptScores.length > 0) {
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('Análisis:', x, y);
+            x += ctx.measureText('Análisis:').width + 6;
+            analysisAttemptScores.forEach((s, i) => {
+                if (i > 0) { ctx.fillStyle = '#475569'; ctx.fillText('|', x, y); x += ctx.measureText('|').width + 6; }
+                ctx.fillStyle = s.pct >= 60 ? '#34d399' : '#f87171';
+                ctx.fillText(`Int.${i+1}: ${s.hits}/${s.total}`, x, y);
+                x += ctx.measureText(`Int.${i+1}: ${s.hits}/${s.total}`).width + 8;
+            });
+        }
+    }
+
+    // ── RNE (banda inferior si hay texto — aplica a cualquier ejercicio) ──────
+    {
+        const rneText = (localStorage.getItem('rne_' + activeExercise) || '').trim();
+        if (rneText) {
+            const curH = off.height / SCALE;
+            // Medir y partir el texto en líneas
+            ctx.font = '10px "Plus Jakarta Sans",sans-serif';
+            const maxW = W - 24;
+            const words = ('RNE: ' + rneText).split('');
+            // wrap char a char para manejar símbolos matemáticos correctamente
+            const lines = [];
+            let line = '';
+            for (const ch of ('RNE: ' + rneText).split(' ')) {
+                const test = line ? line + ' ' + ch : ch;
+                if (ctx.measureText(test).width > maxW && line) {
+                    lines.push(line); line = ch;
+                } else { line = test; }
+            }
+            if (line) lines.push(line);
+            const rneH = lines.length * 16 + 18;
+            const oldD2 = ctx.getImageData(0, 0, W*SCALE, off.height);
+            off.height = (curH + rneH) * SCALE;
+            ctx.putImageData(oldD2, 0, 0);
+            ctx.scale(SCALE, SCALE);
+            // Fondo de la banda RNE
+            ctx.fillStyle = '#042f3d';
+            ctx.fillRect(0, curH, W, rneH);
+            ctx.strokeStyle = '#164e63';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(0, curH); ctx.lineTo(W, curH); ctx.stroke();
+            // Texto
+            ctx.fillStyle = '#67e8f9';
+            ctx.font = '10px "Plus Jakarta Sans",sans-serif';
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'left';
+            lines.forEach((l, i) => ctx.fillText(l, 12, curH + 9 + i * 16));
+        }
+    }
 
     // Descarga
     try {

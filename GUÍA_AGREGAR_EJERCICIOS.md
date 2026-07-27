@@ -233,6 +233,7 @@ Si `enabled: true` y `concept` tiene una sección activa, el botón aparece auto
 | `autorelacion` | Autorelación |
 | `generalizacion` | Generalización/Categorización (ISA) |
 | `entidad_debil` | Entidades débiles |
+| `agregacion` | Agregación |
 
 ---
 
@@ -253,4 +254,11 @@ enabled: true    // ← true: visible en index.html | false: oculto
 
 | Síntoma | Causa probable | Solución |
 |---------|---------------|----------|
-| El ejercicio no ap
+| El ejercicio no aparece en el selector | `<option>` no agregado en `er-designer.html` | Agregar en los dos `<select>` |
+| No aparece en `index.html` | `enabled: false` o `concept` no definido | Verificar metadatos |
+| El analizador muestra el ejercicio anterior | Coma faltante o extra en `analyzeData[]` | Abrir consola (`F12`), buscar SyntaxError |
+| Diseño muestra el ejercicio anterior | Coma faltante o extra en `exercises[]` | Ídem |
+| Los nodos se superponen | `x`/`y` muy cercanos | Aumentar separación entre nodos |
+| Las líneas de conexión no aparecen | `id` incorrecto en `connections` | Verificar que los `id` coincidan |
+| Respuestas no se validan | `correctValue` no coincide | Comparar exactamente con `wordBank` |
+| Cambios no se reflejan en el navegador | Caché del navegador | Incrementar `?t=N` en los `<script>` de `er-designer.html` e `index.html` |
