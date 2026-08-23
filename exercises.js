@@ -15,8 +15,8 @@ const exercises = [
             { id: "e1", type: "entity",      correctValue: "CLIENTE",       x: 15,   y: 50,   w: 120, h: 55 },
             { id: "e2", type: "entity",      correctValue: "AUTO",          x: 50,   y: 50,   w: 120, h: 55 },
             { id: "e3", type: "entity",      correctValue: "REPARACIÓN",    x: 85,   y: 50,   w: 120, h: 55 },
-            { id: "r1", type: "relation",    correctValue: "tiene",         x: 32.5, y: 50,   w: 80,  h: 80 },
-            { id: "r2", type: "relation",    correctValue: "recibe",        x: 67.5, y: 50,   w: 80,  h: 80 },
+            { id: "r_1", type: "relation",    correctValue: "tiene",         x: 32.5, y: 50,   w: 80,  h: 80 },
+            { id: "r_2", type: "relation",    correctValue: "recibe",        x: 67.5, y: 50,   w: 80,  h: 80 },
             { id: "a_e1_1", type: "attribute", isKey: true,  correctValue: "Ci",            x: 15,  y: 70, w: 85,  h: 42 },
             { id: "a_e1_2", type: "attribute", isKey: false, correctValue: "Nombre",        x: 15, y: 22, w: 85,  h: 42 },
             { id: "a_e1_3", type: "attribute", isKey: false, correctValue: "Apellido",     x: 25, y: 22, w: 85,  h: 42 },
@@ -31,15 +31,19 @@ const exercises = [
             { id: "c1", type: "cardinality", correctValue: "1", x: 24,   y: 50, w: 32, h: 32 },
             { id: "c2", type: "cardinality", correctValue: "N", x: 41,   y: 50, w: 32, h: 32 },
             { id: "c3", type: "cardinality", correctValue: "N", x: 59,   y: 50, w: 32, h: 32 },
-            { id: "c4", type: "cardinality", correctValue: "N", x: 76,   y: 50, w: 32, h: 32 }
+            { id: "c4", type: "cardinality", correctValue: "N", x: 76,   y: 50, w: 32, h: 32 },
+            { id: "t_1_left",  type: "totalidad", correctValue: "N", x: 24, y: 38, w: 28, h: 24 },
+            { id: "t_1_right", type: "totalidad", correctValue: "N", x: 41, y: 38, w: 28, h: 24 },
+            { id: "t_2_left",  type: "totalidad", correctValue: "N", x: 59, y: 38, w: 28, h: 24 },
+            { id: "t_2_right", type: "totalidad", correctValue: "N", x: 76, y: 38, w: 28, h: 24 }
         ],
         connections: [
             { from: "a_e1_1", to: "e1" }, { from: "a_e1_2", to: "e1" }, { from: "a_e1_3", to: "e1" },
             { from: "a_e2_1", to: "e2" }, { from: "a_e2_2", to: "e2" }, { from: "a_e2_3", to: "e2" }, { from: "a_e2_4", to: "e2" },
             { from: "a_e3_1", to: "e3" }, { from: "a_e3_2", to: "e3" },
-            { from: "e1", to: "r1" }, { from: "r1", to: "e2" },
-            { from: "e2", to: "r2" }, { from: "r2", to: "e3" },
-            { from: "r2", to: "a_r2_1" }, { from: "r2", to: "a_r2_2" }
+            { from: "e1", to: "r_1" }, { from: "r_1", to: "e2" },
+            { from: "e2", to: "r_2" }, { from: "r_2", to: "e3" },
+            { from: "r_2", to: "a_r2_1" }, { from: "r_2", to: "a_r2_2" }
         ],
         // METADATOS
         concept: "atributos_especiales",  // Relación N:N + atributo de relación
@@ -59,7 +63,7 @@ const exercises = [
         nodes: [
             { id: "e1", type: "entity",   correctValue: "SOCIO",           x: 20, y: 50, w: 120, h: 55 },
             { id: "e2", type: "entity",   correctValue: "LIBRO",           x: 80, y: 50, w: 120, h: 55 },
-            { id: "r1", type: "relation", correctValue: "préstamo",        x: 50, y: 50, w: 85,  h: 85 },
+            { id: "r_1", type: "relation", correctValue: "préstamo",        x: 50, y: 50, w: 85,  h: 85 },
             { id: "a_e1_1", type: "attribute", isKey: true,  correctValue: "Id_socio",      x: 10, y: 22, w: 88,  h: 42 },
             { id: "a_e1_2", type: "attribute", isKey: false, correctValue: "Nombre",        x: 20, y: 22, w: 85,  h: 42 },
             { id: "a_e1_3", type: "attribute", isKey: false, correctValue: "Teléfono",      x: 30, y: 22, w: 85,  h: 42 },
@@ -69,13 +73,15 @@ const exercises = [
             { id: "a_r1_1", type: "attribute", isKey: false, correctValue: "Fecha_prestamo", x: 43, y: 78, w: 105, h: 42 },
             { id: "a_r1_2", type: "attribute", isKey: false, correctValue: "Devuelto",      x: 57, y: 78, w: 85,  h: 42 },
             { id: "c1", type: "cardinality", correctValue: "N", x: 35, y: 50, w: 32, h: 32 },
-            { id: "c2", type: "cardinality", correctValue: "N", x: 65, y: 50, w: 32, h: 32 }
+            { id: "c2", type: "cardinality", correctValue: "N", x: 65, y: 50, w: 32, h: 32 },
+            { id: "t_1_left",  type: "totalidad", correctValue: "N", x: 35, y: 38, w: 28, h: 24 },
+            { id: "t_1_right", type: "totalidad", correctValue: "N", x: 65, y: 38, w: 28, h: 24 }
         ],
         connections: [
             { from: "a_e1_1", to: "e1" }, { from: "a_e1_2", to: "e1" }, { from: "a_e1_3", to: "e1" },
             { from: "a_e2_1", to: "e2" }, { from: "a_e2_2", to: "e2" }, { from: "a_e2_3", to: "e2" },
-            { from: "e1", to: "r1" }, { from: "r1", to: "e2" },
-            { from: "r1", to: "a_r1_1" }, { from: "r1", to: "a_r1_2" }
+            { from: "e1", to: "r_1" }, { from: "r_1", to: "e2" },
+            { from: "r_1", to: "a_r1_1" }, { from: "r_1", to: "a_r1_2" }
         ],
         // METADATOS
         concept: "atributos_especiales",  // Relación N:N + atributo de relación
@@ -94,7 +100,7 @@ const exercises = [
         nodes: [
             { id: "e1", type: "entity",   correctValue: "CLIENTE",        x: 20, y: 50, w: 120, h: 55 },
             { id: "e2", type: "entity",   correctValue: "PEDIDO",         x: 80, y: 50, w: 120, h: 55 },
-            { id: "r1", type: "relation", correctValue: "realiza",        x: 50, y: 50, w: 85,  h: 85 },
+            { id: "r_1", type: "relation", correctValue: "realiza",        x: 50, y: 50, w: 85,  h: 85 },
             { id: "a_e1_1", type: "attribute", isKey: true,  correctValue: "Id_cliente",   x: 10, y: 22, w: 90,  h: 42 },
             { id: "a_e1_2", type: "attribute", isKey: false, correctValue: "Nombre",       x: 20, y: 22, w: 85,  h: 42 },
             { id: "a_e1_3", type: "attribute", isKey: false, correctValue: "Email",        x: 30, y: 22, w: 85,  h: 42 },
@@ -102,12 +108,14 @@ const exercises = [
             { id: "a_e2_2", type: "attribute", isKey: false, correctValue: "Fecha_pedido", x: 80, y: 22, w: 95,  h: 42 },
             { id: "a_e2_3", type: "attribute", isKey: false, correctValue: "Total",        x: 90, y: 22, w: 85,  h: 42 },
             { id: "c1", type: "cardinality", correctValue: "1", x: 35, y: 50, w: 32, h: 32 },
-            { id: "c2", type: "cardinality", correctValue: "N", x: 65, y: 50, w: 32, h: 32 }
+            { id: "c2", type: "cardinality", correctValue: "N", x: 65, y: 50, w: 32, h: 32 },
+            { id: "t_1_left",  type: "totalidad", correctValue: "N", x: 35, y: 38, w: 28, h: 24 },
+            { id: "t_1_right", type: "totalidad", correctValue: "N", x: 65, y: 38, w: 28, h: 24 }
         ],
         connections: [
             { from: "a_e1_1", to: "e1" }, { from: "a_e1_2", to: "e1" }, { from: "a_e1_3", to: "e1" },
             { from: "a_e2_1", to: "e2" }, { from: "a_e2_2", to: "e2" }, { from: "a_e2_3", to: "e2" },
-            { from: "e1", to: "r1" }, { from: "r1", to: "e2" }
+            { from: "e1", to: "r_1" }, { from: "r_1", to: "e2" }
         ],
         // METADATOS
         concept: "relaciones_simples",  // Relación 1:N
@@ -185,6 +193,8 @@ const exercises = [
             { id: "c2",    type: "cardinality", correctValue: "N",  x: 42, y: 45, w: 30, h: 30 },
             { id: "c3",    type: "cardinality", correctValue: "N",  x: 58, y: 45, w: 30, h: 30 },
             { id: "c4",    type: "cardinality", correctValue: "1",  x: 77, y: 45, w: 30, h: 30 },
+            { id: "t_alq_left",  type: "totalidad", correctValue: "N", x: 18, y: 33, w: 28, h: 24 },
+            { id: "t_alq_right", type: "totalidad", correctValue: "N", x: 42, y: 33, w: 28, h: 24 },
             { id: "t_gua_left",  type: "totalidad", correctValue: "S", x: 58, y: 33, w: 28, h: 24 },
             { id: "t_gua_right", type: "totalidad", correctValue: "N", x: 77, y: 33, w: 28, h: 24 },
             // ── Atributos SOCIO ──
@@ -241,33 +251,33 @@ const exercises = [
         • De cada <strong>paciente</strong> se guarda cédula, nombre y teléfono.<br>
         • De cada <strong>médico</strong> se registra matrícula, nombre y especialidad.<br>
         • Las <strong>consultas</strong> tienen número, fecha y diagnóstico.<br>
-        • Un paciente puede tener muchas consultas; cada consulta es de un médico.<br>
-        • Un médico puede atender muchos pacientes y un paciente se puede atender con muchos médicos.`,
-        hint: "Recuerda que Cédula es la clave primaria de PACIENTE y Matrícula de MÉDICO. Las relaciones 'realiza' y 'atiende' conectan las entidades.",
+        • Un paciente puede realizar muchas consultas, pero cada consulta es realizada por un único paciente.<br>
+        • Un médico puede atender muchas consultas, pero cada consulta es atendida por un único médico.`,
+        hint: "Recuerda que Cédula es la clave primaria de PACIENTE y Matrícula de MÉDICO. CONSULTA es la entidad compartida: 'realiza' la conecta con PACIENTE y 'atiende' con MÉDICO.",
         wordBank: ["PACIENTE", "MÉDICO", "CONSULTA", "realiza", "atiende", "Cédula", "Nombre", "Nombre", "Teléfono", "Matrícula", "Especialidad", "Número", "Fecha", "Diagnóstico", "N", "1", "N", "1"],
         nodes: [
             { id: "e_pac", type: "entity",      correctValue: "PACIENTE",    x: 15,   y: 50,   w: 120, h: 55 },
-            { id: "e_med", type: "entity",      correctValue: "MÉDICO",      x: 50,   y: 50,   w: 120, h: 55 },
-            { id: "e_con", type: "entity",      correctValue: "CONSULTA",    x: 85,   y: 50,   w: 120, h: 55 },
+            { id: "e_con", type: "entity",      correctValue: "CONSULTA",    x: 50,   y: 50,   w: 120, h: 55 },
+            { id: "e_med", type: "entity",      correctValue: "MÉDICO",      x: 85,   y: 50,   w: 120, h: 55 },
             { id: "r_rea", type: "relation",    correctValue: "realiza",     x: 32,   y: 50,   w: 80,  h: 80,  totalityRight: true },
             { id: "r_ate", type: "relation",    correctValue: "atiende",     x: 68,   y: 50,   w: 80,  h: 80,  totalityRight: true },
             { id: "a_p1", type: "attribute", isKey: true,  correctValue: "Cédula",       x: 5,  y: 22, w: 85,  h: 42 },
             { id: "a_p2", type: "attribute", isKey: false, correctValue: "Nombre",      x: 15, y: 22, w: 85,  h: 42 },
             { id: "a_p3", type: "attribute", isKey: false, correctValue: "Teléfono",    x: 25, y: 22, w: 90,  h: 42 },
-            { id: "a_m1", type: "attribute", isKey: true,  correctValue: "Matrícula",   x: 40, y: 22, w: 90,  h: 42 },
-            { id: "a_m2", type: "attribute", isKey: false, correctValue: "Nombre",      x: 50, y: 22, w: 85,  h: 42 },
-            { id: "a_m3", type: "attribute", isKey: false, correctValue: "Especialidad",x: 60, y: 22, w: 100, h: 42 },
-            { id: "a_c1", type: "attribute", isKey: true,  correctValue: "Número",      x: 80, y: 22, w: 85,  h: 42 },
-            { id: "a_c2", type: "attribute", isKey: false, correctValue: "Fecha",       x: 90, y: 22, w: 85,  h: 42 },
-            { id: "a_c3", type: "attribute", isKey: false, correctValue: "Diagnóstico", x: 85, y: 78, w: 95,  h: 42 },
-            { id: "c_p", type: "cardinality", correctValue: "N", x: 24,   y: 50, w: 32, h: 32 },
-            { id: "c_m", type: "cardinality", correctValue: "1", x: 41,   y: 50, w: 32, h: 32 },
-            { id: "c_m2", type: "cardinality", correctValue: "N", x: 59,   y: 50, w: 32, h: 32 },
-            { id: "c_c", type: "cardinality", correctValue: "1", x: 76,   y: 50, w: 32, h: 32 },
+            { id: "a_c1", type: "attribute", isKey: true,  correctValue: "Número",      x: 44, y: 22, w: 85,  h: 42 },
+            { id: "a_c2", type: "attribute", isKey: false, correctValue: "Fecha",       x: 56, y: 22, w: 85,  h: 42 },
+            { id: "a_c3", type: "attribute", isKey: false, correctValue: "Diagnóstico", x: 50, y: 78, w: 95,  h: 42 },
+            { id: "a_m1", type: "attribute", isKey: true,  correctValue: "Matrícula",   x: 78, y: 22, w: 90,  h: 42 },
+            { id: "a_m2", type: "attribute", isKey: false, correctValue: "Nombre",      x: 88, y: 22, w: 85,  h: 42 },
+            { id: "a_m3", type: "attribute", isKey: false, correctValue: "Especialidad",x: 83, y: 78, w: 100, h: 42 },
+            { id: "c_pac", type: "cardinality", correctValue: "1", x: 24,   y: 50, w: 32, h: 32 },
+            { id: "c_con1", type: "cardinality", correctValue: "N", x: 41,   y: 50, w: 32, h: 32 },
+            { id: "c_con2", type: "cardinality", correctValue: "N", x: 59,   y: 50, w: 32, h: 32 },
+            { id: "c_med", type: "cardinality", correctValue: "1", x: 76,   y: 50, w: 32, h: 32 },
             { id: "t_rea_left",  type: "totalidad", correctValue: "N", x: 24, y: 38, w: 28, h: 24 },
-            { id: "t_rea_right", type: "totalidad", correctValue: "S", x: 44, y: 38, w: 28, h: 24 },
-            { id: "t_ate_left",  type: "totalidad", correctValue: "N", x: 59, y: 38, w: 28, h: 24 },
-            { id: "t_ate_right", type: "totalidad", correctValue: "S", x: 76, y: 38, w: 28, h: 24 }
+            { id: "t_rea_right", type: "totalidad", correctValue: "S", x: 41, y: 38, w: 28, h: 24 },
+            { id: "t_ate_left",  type: "totalidad", correctValue: "N", x: 76, y: 38, w: 28, h: 24 },
+            { id: "t_ate_right", type: "totalidad", correctValue: "S", x: 59, y: 38, w: 28, h: 24 }
         ],
         connections: [
             { from: "a_p1", to: "e_pac" }, { from: "a_p2", to: "e_pac" }, { from: "a_p3", to: "e_pac" },
@@ -305,6 +315,8 @@ const exercises = [
         { id: "r_0", type: "relation", correctValue: "cursa", x: 50, y: 50, w: 80, h: 80 },
         { id: "c_0_n", type: "cardinality", correctValue: "N", x: 40, y: 50, w: 30, h: 30 },
         { id: "c_0_n2", type: "cardinality", correctValue: "N", x: 60, y: 50, w: 30, h: 30 },
+        { id: "t_0_left",  type: "totalidad", correctValue: "N", x: 40, y: 38, w: 28, h: 24 },
+        { id: "t_0_right", type: "totalidad", correctValue: "N", x: 60, y: 38, w: 28, h: 24 },
         { id: "a_8", type: "attribute", correctValue: "Nota", x: 50, y: 72, w: 92, h: 40 }
     ],
     connections: [
@@ -574,10 +586,14 @@ const exercises = [
         { id: "r_0", type: "relation", correctValue: "juega_en", x: 30, y: 60, w: 80, h: 80 },
         { id: "c_0_left", type: "cardinality", correctValue: "N", x: 30, y: 45, w: 30, h: 30 },
         { id: "c_0_right", type: "cardinality", correctValue: "N", x: 30, y: 75, w: 30, h: 30 },
-       
+        { id: "t_0_left",  type: "totalidad", correctValue: "N", x: 46, y: 75, w: 28, h: 24 },
+        { id: "t_0_right", type: "totalidad", correctValue: "N", x: 46, y: 45, w: 28, h: 24 },
+
         { id: "r_1", type: "relation", correctValue: "juega_con", x: 60, y: 30, w: 80, h: 80 },
         { id: "c_1_left", type: "cardinality", correctValue: "N", x: 43, y: 20, w: 30, h: 30 },
         { id: "c_1_right", type: "cardinality", correctValue: "N", x: 43, y: 40, w: 30, h: 30 },
+        { id: "t_1_left",  type: "totalidad", correctValue: "N", x: 43, y: 8,  w: 28, h: 24 },
+        { id: "t_1_right", type: "totalidad", correctValue: "N", x: 43, y: 52, w: 28, h: 24 },
         { id: "a_12", type: "attribute", correctValue: "Fecha", x: 70, y: 20, w: 92, h: 40 },
         { id: "a_13", type: "attribute", correctValue: "Resultado", x: 70, y: 40, w: 92, h: 40 }
     ],
@@ -617,6 +633,8 @@ const exercises = [
         { id: "r_0", type: "relation", correctValue: "compone", x: 35, y: 50, w: 80, h: 80 },
         { id: "c_0_1", type: "cardinality", correctValue: "N", x: 29, y: 50, w: 30, h: 30 },
         { id: "c_0_n", type: "cardinality", correctValue: "N", x: 41, y: 50, w: 30, h: 30 },
+        { id: "t_0_left",  type: "totalidad", correctValue: "N", x: 29, y: 38, w: 28, h: 24 },
+        { id: "t_0_right", type: "totalidad", correctValue: "N", x: 41, y: 38, w: 28, h: 24 },
         { id: "r_1", type: "relation", correctValue: "contiene", x: 65, y: 50, w: 80, h: 80, totalityLeft: true },
         { id: "c_1_1", type: "cardinality", correctValue: "N", x: 71, y: 50, w: 30, h: 30 },
         { id: "c_1_n", type: "cardinality", correctValue: "1", x: 59, y: 50, w: 30, h: 30 },
@@ -677,6 +695,8 @@ const exercises = [
         { id: "r_0", type: "relation", correctValue: "prestar", x: 33, y: 50, w: 80, h: 80 },
         { id: "c_0_1", type: "cardinality", correctValue: "N", x: 26, y: 50, w: 30, h: 30 },
         { id: "c_0_n", type: "cardinality", correctValue: "N", x: 40, y: 50, w: 30, h: 30 },
+        { id: "t_0_left",  type: "totalidad", correctValue: "N", x: 26, y: 38, w: 28, h: 24 },
+        { id: "t_0_right", type: "totalidad", correctValue: "N", x: 40, y: 38, w: 28, h: 24 },
         { id: "a_12", type: "attribute", correctValue: "FechaI", x: 28, y: 70, w: 92, h: 40 },
         { id: "a_13", type: "attribute", correctValue: "FechaF", x: 33, y: 28, w: 92, h: 40 },
         { id: "a_14", type: "attribute", correctValue: "FechaD", x: 38, y: 70, w: 92, h: 40 },
@@ -742,6 +762,8 @@ const exercises = [
         { id: "r_0", type: "relation", correctValue: "vende", x: 36.7, y: 50, w: 80, h: 80 },
         { id: "c_0_1", type: "cardinality", correctValue: "N", x: 30, y: 50, w: 30, h: 30 },
         { id: "c_0_n", type: "cardinality", correctValue: "N", x: 43.3, y: 50, w: 30, h: 30 },
+        { id: "t_0_left",  type: "totalidad", correctValue: "N", x: 30, y: 38, w: 28, h: 24 },
+        { id: "t_0_right", type: "totalidad", correctValue: "N", x: 43.3, y: 38, w: 28, h: 24 },
         { id: "r_1", type: "relation", isDoubleRelation: true, totalityRight: true, correctValue: "tiene", x: 63.3, y: 50, w: 80, h: 80 },
         { id: "c_1_1", type: "cardinality", correctValue: "1", x: 56.7, y: 50, w: 30, h: 30 },
         { id: "c_1_n", type: "cardinality", correctValue: "N", x: 70, y: 50, w: 30, h: 30 },
@@ -749,7 +771,9 @@ const exercises = [
         { id: "t_1_right", type: "totalidad", correctValue: "S", x: 72.7, y: 45, w: 28, h: 24 },
         { id: "r_2", type: "relation", correctValue: "compuesta_por", x: 7, y: 50, w: 100, h: 100 },
         { id: "c_2_top", type: "cardinality", correctValue: "N", x: 16, y: 40, w: 30, h: 30 },
-        { id: "c_2_bot", type: "cardinality", correctValue: "N", x: 16, y: 60, w: 30, h: 30 }
+        { id: "c_2_bot", type: "cardinality", correctValue: "N", x: 16, y: 60, w: 30, h: 30 },
+        { id: "t_2_left",  type: "totalidad", correctValue: "N", x: 5, y: 28, w: 28, h: 24 },
+        { id: "t_2_right", type: "totalidad", correctValue: "N", x: 5, y: 72, w: 28, h: 24 }
     ],
     connections: [
         { from: "a_0", to: "e_0" },

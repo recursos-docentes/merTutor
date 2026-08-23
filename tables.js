@@ -533,10 +533,42 @@ function _renderRelSubUI(rel) {
     }
 }
 
+// Atributos no-clave de las entidades que participan en la relación (vía FK),
+// usados como opciones incorrectas en el banco de palabras: obligan a razonar
+// cuáles atributos pasan realmente a la tabla intermedia (solo las PK, no todo
+// el resto de la entidad), en vez de simplemente hacer clic en todo lo que aparece.
+// Se limita a 2 por entidad para que el banco no crezca desproporcionado en
+// entidades con muchos atributos (ej. CLUB en Fútbol).
+const _TAB_REL_MAX_DISTRACTORS_PER_ENTITY = 2;
+
+function _tabRelDistractorPool(rel) {
+    const correctNames = new Set(rel.tableFields.map(f => f.name));
+    const entityNames  = [...new Set(rel.tableFields.filter(f => f.isFK && f.fkTo).map(f => f.fkTo))];
+    const pool = [];
+    entityNames.forEach(en => {
+        const tbl = _tabData.entityTables.find(t => t.name === en);
+        if (!tbl) return;
+        const candidates = tbl.fields
+            .filter(f => !f.isPK && !correctNames.has(f.name) && !pool.includes(f.name))
+            .map(f => f.name)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, _TAB_REL_MAX_DISTRACTORS_PER_ENTITY);
+        candidates.forEach(name => pool.push(name));
+    });
+    return pool;
+}
+
+// Cachea el banco (correctos + distractores) por índice de relación: se calcula
+// una sola vez al renderizar, y _tabRelRefreshWordBank reutiliza el mismo set
+// (si se recalculara con nuevos distractores al azar, no coincidiría con los
+// botones ya dibujados en el DOM).
+let _tabRelWordPoolCache = {};
+
 function _renderRelTableFill(rel, rule) {
-    const allFields = rel.tableFields.map(f => f.name);
+    const ri = _tabRelIdx;
+    const allFields = [...rel.tableFields.map(f => f.name), ..._tabRelDistractorPool(rel)];
+    _tabRelWordPoolCache[ri] = allFields;
     const shuffled  = [...allFields].sort(() => Math.random() - 0.5);
-    const ri        = _tabRelIdx;
 
     return `
         <div class="border-t border-slate-800 pt-3 flex flex-col gap-3">
@@ -544,7 +576,7 @@ function _renderRelTableFill(rel, rule) {
                 ✅ Regla correcta: <strong>${_esc(rule.text)}</strong>
             </div>
 
-            <p class="text-xs text-slate-400 font-bold">Completar la tabla que genera esta relación:</p>
+            <p class="text-xs text-slate-400 font-bold">Completar la tabla que genera esta relación. El banco de palabras tiene elementos de más — no todos van en esta tabla.</p>
 
             <!-- Banco palabras -->
             <div id="tab-rel-word-bank" class="flex flex-wrap gap-1.5">
@@ -703,7 +735,7 @@ function _tabRelRefreshWordBank() {
     if (!bank) return;
     const rel = _tabData.relations[_tabRelIdx];
     if (!rel) return;
-    const allFields = rel.tableFields.map(f => f.name);
+    const allFields = _tabRelWordPoolCache[_tabRelIdx] || rel.tableFields.map(f => f.name);
     const counts = {};
     allFields.forEach(w => counts[w] = (counts[w] || 0) + 1);
     const used = {};
@@ -774,7 +806,7 @@ function _tabValidateRelTable(ri) {
         setTimeout(() => _tabNextRelation(), 1800);
     } else {
         fb.className = 'p-3 rounded-2xl text-xs font-bold border bg-rose-900/40 border-rose-700 text-rose-300';
-        fb.innerHTML = `❌ Hay ${errors} campo(s) incorrectos en la zona equivocada. Los PK van primero.${histHtml}`;
+        fb.innerHTML = `❌ Hay ${errors} campo(s) incorrectos: puede que no correspondan a esta tabla, o que estén en la zona equivocada (los PK van primero).${histHtml}`;
     }
 }
 
@@ -1093,6 +1125,11 @@ function _tabExportPDF() {
     const constrHTML = constr.map(c => `
         <p style="font-family:monospace;font-size:11px;margin:2px 0;color:#374151;">${c}</p>`).join('');
 
+    const enunciadoHTML = exercises[_tabExIdx]?.description
+        ? `<h2>Enunciado</h2>
+           <div class="enunciado">${exercises[_tabExIdx].description}</div>`
+        : '';
+
     const merImageHTML = window.merRefImageUrl
         ? `<h2>Modelo E-R de referencia</h2>
            <img src="${window.merRefImageUrl}" style="max-width:100%;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:12px;">`
@@ -1127,12 +1164,14 @@ function _tabExportPDF() {
   h1   { font-size: 18px; margin-bottom: 4px; }
   h2   { font-size: 13px; color: #4b5563; border-bottom: 1px solid #d1d5db; padding-bottom: 4px; margin: 16px 0 8px; }
   .meta { font-size: 11px; color: #6b7280; margin-bottom: 16px; }
+  .enunciado { font-size: 12px; line-height: 1.6; color: #374151; margin-bottom: 12px; }
   @media print { body { margin: 10mm 15mm; } img { break-inside: avoid; } }
 </style>
 </head><body>
 <h1>Pasaje a Tablas</h1>
 <p class="meta">Ejercicio: ${data.title} &nbsp;|&nbsp; DB-Lab — Prof. Elizabeth Izquierdo | CC BY-SA 4.0</p>
 ${attemptsHTML}
+${enunciadoHTML}
 ${merImageHTML}
 <h2>Modelo Relacional</h2>
 ${tablesHTML}
