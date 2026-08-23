@@ -774,27 +774,37 @@ async function saveAsPNG() {
     });
 
     // ── Círculos de totalidad ─────────────────────
+    // Solo se dibuja si el estudiante eligió "S" Y esa era la respuesta correcta
+    // (igual que en pantalla, vía _totalidadCorrectMap — antes acá solo se miraba
+    // userVal, así que un "S" incorrecto también dibujaba el círculo).
     cur.nodes.forEach(n => {
         if (n.type !== 'totalidad') return;
-        const userVal = (n.userValue || '').toUpperCase();
-        if (userVal !== 'S') return;
+        const userVal   = (n.userValue || '').toUpperCase();
+        const isCorrect = _totalidadCorrectMap ? _totalidadCorrectMap[n.id] === true : false;
+        if (userVal !== 'S' || !isCorrect) return;
         {
             const match = n.id.match(/t_(.+?)_(left|right)/);
             if (!match) return;
-            const relEl = document.getElementById('r_' + match[1]);
+            const relId = 'r_' + match[1];
+            const relEl = document.getElementById(relId);
             if (!relEl) return;
             const rel = elC(relEl);
 
-            let entityEl = null, minDist = Infinity;
-            cur.connections.forEach(conn => {
-                const otherId = conn.from === 'r_'+match[1] ? conn.to
-                              : conn.to   === 'r_'+match[1] ? conn.from : null;
-                if (!otherId) return;
-                const otherNode = cur.nodes.find(nd => nd.id === otherId);
-                if (!['entity','aggregation'].includes(otherNode?.type)) return;
-                const dist = Math.hypot(otherNode.x - n.x, otherNode.y - n.y);
-                if (dist < minDist) { minDist = dist; entityEl = document.getElementById(otherId); }
-            });
+            // Misma convención que drawCrispConnectors: "left" = entidad → relación,
+            // "right" = relación → entidad (no la entidad más cercana por distancia,
+            // que se rompe si se reposicionan los nodos del diagrama).
+            const isLeftSide = match[2] === 'left';
+            let entityId = null;
+            if (isLeftSide) {
+                const conn = cur.connections.find(c => c.to === relId &&
+                    ['entity','aggregation'].includes(cur.nodes.find(nd => nd.id === c.from)?.type));
+                entityId = conn?.from;
+            } else {
+                const conn = cur.connections.find(c => c.from === relId &&
+                    ['entity','aggregation'].includes(cur.nodes.find(nd => nd.id === c.to)?.type));
+                entityId = conn?.to;
+            }
+            const entityEl = entityId ? document.getElementById(entityId) : null;
             if (!entityEl) return;
 
             const ent = elC(entityEl);
