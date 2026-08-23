@@ -774,14 +774,15 @@ async function saveAsPNG() {
     });
 
     // ── Círculos de totalidad ─────────────────────
-    // Solo se dibuja si el estudiante eligió "S" Y esa era la respuesta correcta
-    // (igual que en pantalla, vía _totalidadCorrectMap — antes acá solo se miraba
-    // userVal, así que un "S" incorrecto también dibujaba el círculo).
+    // Se dibuja siempre que el estudiante haya elegido "S" (lo que realmente
+    // marcó), coloreado en verde si era correcto o rojo si no — igual que el
+    // resto del diagrama (entidades/atributos/cardinalidades muestran lo que
+    // el estudiante escribió, no la respuesta esperada).
     cur.nodes.forEach(n => {
         if (n.type !== 'totalidad') return;
         const userVal   = (n.userValue || '').toUpperCase();
         const isCorrect = _totalidadCorrectMap ? _totalidadCorrectMap[n.id] === true : false;
-        if (userVal !== 'S' || !isCorrect) return;
+        if (userVal !== 'S') return;
         {
             const match = n.id.match(/t_(.+?)_(left|right)/);
             if (!match) return;
@@ -815,7 +816,7 @@ async function saveAsPNG() {
             const t = 1 / (Math.abs(ndx)/rel.hw + Math.abs(ndy)/rel.hh);
 
             ctx.save();
-            ctx.fillStyle = '#1e293b';
+            ctx.fillStyle = isCorrect ? '#059669' : '#dc2626';
             ctx.beginPath();
             ctx.arc(rel.x + ndx*t, rel.y + ndy*t, 5, 0, Math.PI*2);
             ctx.fill();
