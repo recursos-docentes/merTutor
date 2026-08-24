@@ -7,15 +7,16 @@ Diseñada por **Prof. Elizabeth Izquierdo** con asistencia de Claude — [licenc
 
 ---
 
-## Flujo de aprendizaje (3 etapas)
+## Flujo de aprendizaje (4 etapas)
 
-Cada ejercicio tiene tres etapas accesibles desde los botones superiores:
+Cada ejercicio tiene etapas accesibles desde los botones superiores. Las primeras tres forman una secuencia por ejercicio (MER); la Normalización es un módulo aparte con sus propios ejercicios:
 
 | Etapa | Descripción |
 |-------|-------------|
 | 📋 **Analizar el problema** | El estudiante lee el enunciado completo y clasifica cada término (entidad, atributo, relación) desde un panel lateral. Incluye subtipificación (clave, simple, multivaluado, compuesto, de relación, derivado; fuerte/débil). |
 | 🔗 **Diseño E-R** | Arma el diagrama colocando los nombres en los nodos vacíos. Puede validar y guardar como PNG. |
-| 📊 **Pasaje a tablas** | *(Próximamente)* Convierte el modelo a tablas relacionales. |
+| 📊 **Pasaje a tablas** | Convierte el modelo E-R a tablas relacionales: completa cada tabla con banco de palabras (incluye distractores), y escribe las restricciones de clave foránea (FK). Exporta a PDF con el enunciado y el historial de intentos. |
+| 🧬 **Normalización** | Módulo independiente (no depende del MER): practica llevar una tabla sin normalizar hasta 3FN. Ver sección propia más abajo. |
 
 ---
 
@@ -77,6 +78,53 @@ Si `rne` se omite, la lógica infiere el tipo a partir del campo `concept` para 
 
 ---
 
+## Módulo de Normalización
+
+Tab independiente (🧬 Normalización) para practicar llevar una tabla sin normalizar hasta **3FN**, con banco de palabras + distractores, igual mecánica de interacción que Pasaje a tablas.
+
+### Ejercicios disponibles
+
+| Índice | Caso | Multivaluado en 1FN |
+|--------|------|----------------------|
+| 0 | 📦 Pedidos | Teléfonos del cliente (un solo atributo) |
+| 1 | 🎬 Alquiler de Películas | Directores de la película (un solo atributo) |
+| 2 | 🎓 Inscripciones a Cursos | Teléfono del estudiante (un solo atributo) |
+
+Los tres tienen la misma complejidad: un solo atributo multivaluado en la tabla original (nunca un grupo de varios atributos repetidos juntos — eso resultó más difícil de leer para los estudiantes). Cada uno termina en 4 tablas finales y 4 restricciones FK.
+
+### Secuencia por paso (1FN / 2FN / 3FN)
+
+Cada paso arma dinámicamente sus subfases según lo que declaren los datos (`_normStepPhases` en `normalize.js`):
+
+1. **¿Hay alguna tabla que no cumple la forma normal?** — Sí/No simple si solo hay una tabla (siempre el caso en 1FN); si hay varias tablas (2FN/3FN), primero pregunta si existe alguna violación y **después** pide marcar cuáles.
+2. **Identificar el atributo que viola la regla** — en 1FN, cuál no es atómico; en 3FN, cuál genera la dependencia transitiva.
+3. **(Solo 3FN) ¿De qué atributo no clave depende?** — antes de la clasificación completa, aísla el atributo "puente" de la dependencia transitiva.
+4. **Clasificar cada atributo** — en 1FN es un check simple (marcar solo los que pasan a la tabla nueva; los atributos compartidos, como la clave, también se marcan); en 2FN/3FN es elegir de qué depende cada atributo no clave.
+5. **Armar la(s) tabla(s)** — banco de palabras con distractores, mismo mecanismo que Pasaje a tablas.
+
+Al final de los 3 pasos: **esquema completo** + restricciones FK + exportar PDF (con enunciado, tabla original, e historial de intentos de cada paso).
+
+### Navegación de referencia (sin perder el progreso)
+
+- **📋 Original** (badge fijo, siempre disponible): vuelve a mostrar el enunciado y la tabla sin normalizar.
+- **Badges 1FN/2FN/3FN ya completados** (verdes, clickeables): abren un resumen de solo lectura de las decisiones tomadas en ese paso (qué tabla violaba la regla, de qué dependía cada atributo, tablas resultantes).
+- Ambos tienen un botón "← Volver al paso actual" que restaura exactamente dónde estaba el estudiante.
+
+### Convenciones de datos (`normData.js`)
+
+- Nombres de tabla **siempre en singular** en los datos (`INSCRIPCIÓN`, `TELÉFONO`, `PELÍCULA`...); se pluralizan al mostrarse con `_pluralize()`. **Nunca usar nombres compuestos con guion bajo** (ej. `TELÉFONO_EST`) — `_pluralize()` no los reconoce y arma plurales rotos (`TELÉFONO_ESTES`).
+- `gateTables`: qué tablas existen en ese paso y si ya cumplen la forma normal.
+- `violationOptions`/`violatingAttr`: solo si el paso pregunta "qué atributo viola la regla" (1FN y 3FN).
+- `transitiveTargetOptions`/`transitiveTarget`: solo en 3FN, la pregunta de "de qué atributo no clave depende".
+- `markToTable` (solo 1FN): activa la UI de marcar-si-pertenece-a-la-tabla-nueva en `dependencies[]`. Los atributos compartidos entre las dos tablas resultantes (típicamente la clave) también deben listarse con `dependsOn` apuntando a la tabla nueva.
+- `dependencyOptions`/`dependencies[]` (2FN/3FN): de qué depende cada atributo no clave.
+- `replaces`: qué tabla(s) del paso anterior desaparecen al descomponerse en `resultTables`. El nombre de la tabla original se conserva hasta el esquema final en vez de inventar uno nuevo.
+- Una tabla nueva puede declarar `fkTo` hacia una tabla que **todavía no existe** (se crea recién en un paso posterior) — es válido porque para cuando se llega al esquema final esa FK ya apunta a algo real.
+
+Para agregar un ejercicio nuevo: copiar el bloque de `📦 Pedidos` en `normData.js` como plantilla (es el más simple), y probar todo el flujo en el navegador antes de darlo por terminado.
+
+---
+
 ## Accesibilidad y soporte para estudiantes con dificultades
 
 | Función | Descripción |
@@ -95,21 +143,25 @@ Si `rne` se omite, la lógica infiere el tipo a partir del campo `concept` para 
 ```
 merTutor-main/
 ├── index.html               ← Página de inicio con ejercicios por concepto
-├── er-designer.html         ← Aplicación principal (Analizar → Diseño E-R → Tablas)
-├── exercises.js             ← Datos: exercises[], analyzeData[], analyzeConfig[]
+├── er-designer.html         ← Aplicación principal (Analizar → Diseño E-R → Tablas → Normalización)
+├── exercises.js             ← Datos MER: exercises[], analyzeData[], analyzeConfig[]
 ├── script.js                ← UI: variables globales, loadExercise(), canvas render
 ├── diagram.js               ← Diagrama: drawCrispConnectors(), validación, PNG
-├── analysis.js              ← Análisis: modo eval, panel de clasificación
+├── analysis.js              ← Análisis: modo eval, panel de clasificación, setStage()
+├── tablesData.js            ← Datos de Pasaje a tablas
+├── tables.js                ← Lógica de Pasaje a tablas (banco de palabras, FK, PDF)
+├── normData.js              ← Datos del módulo de Normalización (3 ejercicios)
+├── normalize.js             ← Lógica del módulo de Normalización
 ├── styles.css               ← Estilos personalizados
-├── add-exercise-wizard.html ← Asistente para crear nuevos ejercicios
+├── add-exercise-wizard.html ← Asistente para crear nuevos ejercicios (MER)
 └── README.md                ← Este archivo
 ```
 
-> **Nota sobre caché:** Los archivos JS se cargan con `?t=2` en `er-designer.html` e `index.html`. Al subir cambios que los estudiantes no ven reflejados, incrementar ese número.
+> **Nota sobre caché:** Los archivos JS se cargan con `?t=45` en `er-designer.html` e `index.html`. Al subir cambios que los estudiantes no ven reflejados, incrementar ese número **en ambos archivos, en todos los `<script>` afectados**.
 
 ---
 
-## Ejercicios disponibles
+## Ejercicios disponibles (Diseño E-R)
 
 | Índice | Caso | Concepto | Estado |
 |--------|------|---------|--------|

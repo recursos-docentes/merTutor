@@ -19,7 +19,7 @@
                     <img src="logo plataforma BD.png" alt="DB-Lab UTU" class="h-14">
                 </a>
                 <div>
-                    <p class="text-xs text-slate-400 font-medium">Modelado Entidad-Relación</p>
+                    <p class="text-xs text-slate-400 font-medium">Diseño de Bases de Datos</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
@@ -42,6 +42,8 @@
             <button id="tab-diagram" onclick="setStage('diagram')" class="stage-tab">🔗 Diseño E-R</button>
             <svg class="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             <button id="tab-tables" onclick="setStage('tables')" disabled class="stage-tab">📊 Pasaje a tablas 🔒</button>
+            <svg class="w-4 h-4 text-slate-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <button id="tab-normalize" onclick="setStage('normalize')" class="stage-tab">🧬 Normalización</button>
 
             <div class="ml-auto flex items-center gap-2">
                 <button onclick="showTutorial()" title="¿Cómo usar la herramienta?"
@@ -350,6 +352,10 @@
     <!-- Contenido generado dinámicamente por tables.js → renderTablesPanel() -->
     <div id="stage-tables" class="no-print hidden flex-1 flex flex-col" style="min-height:640px;"></div>
 
+    <!-- ══ Normalización ═══════════════════════════════════ -->
+    <!-- Contenido generado dinámicamente por normalize.js → renderNormPanel() -->
+    <div id="stage-normalize" class="no-print hidden flex-1 flex flex-col" style="min-height:640px;"></div>
+
     <!-- Footer -->
     <footer class="no-print bg-slate-950 text-slate-500 text-xs py-4 text-center border-t border-slate-800">
         Herramienta diseñada por Prof. Elizabeth Izquierdo con asistencia de Claude —
@@ -543,13 +549,15 @@
         </div>
     </div>
 
-    <!-- ── Scripts externos (cache bust t=43) ── -->
-    <script src="exercises.js?t=43"></script>
-    <script src="script.js?t=43"></script>
-    <script src="analysis.js?t=43"></script>
-    <script src="diagram.js?t=43"></script>
-    <script src="tablesData.js?t=43"></script>
-    <script src="tables.js?t=43"></script>
+    <!-- ── Scripts externos (cache bust t=45) ── -->
+    <script src="exercises.js?t=45"></script>
+    <script src="script.js?t=45"></script>
+    <script src="analysis.js?t=45"></script>
+    <script src="diagram.js?t=45"></script>
+    <script src="tablesData.js?t=45"></script>
+    <script src="tables.js?t=45"></script>
+    <script src="normData.js?t=45"></script>
+    <script src="normalize.js?t=45"></script>
 
 </body>
 </html>

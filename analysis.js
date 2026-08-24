@@ -10,7 +10,7 @@ function _initMode() {
 }
 // ── Stage navigation ─────────────────────────────────
 function setStage(stage) {
-    ['analyze', 'diagram', 'tables'].forEach(s => {
+    ['analyze', 'diagram', 'tables', 'normalize'].forEach(s => {
         const panel = document.getElementById(`stage-${s}`);
         if (panel) panel.classList.toggle('hidden', s !== stage);
         const tab = document.getElementById(`tab-${s}`);
@@ -19,6 +19,9 @@ function setStage(stage) {
     hidePopup();
     if (stage === 'tables') {
         if (typeof renderTablesPanel === 'function') renderTablesPanel(activeExercise);
+    }
+    if (stage === 'normalize') {
+        if (typeof renderNormPanel === 'function') renderNormPanel(_normExIdx);
     }
     if (stage === 'diagram') {
         requestAnimationFrame(drawCrispConnectors);
