@@ -1,6 +1,6 @@
 # DB-Lab — UTU 2026
 
-Herramienta interactiva para practicar diagramas **Entidad-Relación** (notación Chen) en el aula.  
+Herramienta interactiva para practicar diseño de bases de datos en el aula: desde el diagrama **Entidad-Relación** (notación Chen) hasta el pasaje a tablas y la **normalización** (1FN/2FN/3FN).  
 Diseñada por **Prof. Elizabeth Izquierdo** con asistencia de Claude — [licencia CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 🌐 **Demo en vivo:** https://recursos-docentes.github.io/DB-Lab/
